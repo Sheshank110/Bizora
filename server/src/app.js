@@ -8,8 +8,28 @@ import env from './config/env.js';
 import routes from './routes/index.js';
 import notFound from './middlewares/notFound.js';
 import errorHandler from './middlewares/errorHandler.js';
+import connectDB from './config/db.js';
 
 const app = express();
+
+// Auto-connect database in Vercel serverless environment
+if (process.env.VERCEL) {
+  connectDB().catch((err) => {
+    console.warn('[Vercel DB Init]', err.message);
+  });
+}
+
+// Ensure DB is connected for serverless invocations
+app.use(async (req, res, next) => {
+  if (process.env.VERCEL) {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.warn('[Vercel DB Hook]', err.message);
+    }
+  }
+  next();
+});
 
 // ─── Security ────────────────────────────────────────
 app.use(
