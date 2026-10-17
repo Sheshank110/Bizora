@@ -1,28 +1,22 @@
 import { forwardRef } from 'react';
-import { Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { IconLoader2 } from '@tabler/icons-react';
 
 const variants = {
-  primary:
-    'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-md shadow-brand-600/20',
-  secondary:
-    'bg-[var(--glass-bg-heavy)] text-[var(--text-primary)] border border-[var(--border-default)] hover:bg-[var(--glass-bg)] hover:border-[var(--border-focus)] backdrop-blur-md',
-  ghost:
-    'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--glass-bg)] hover:text-[var(--text-primary)]',
-  danger:
-    'bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-md shadow-rose-600/20',
-  outline:
-    'bg-transparent text-brand-500 border border-brand-500/40 hover:bg-brand-500/10 hover:border-brand-500',
-  'outline-light':
-    'bg-transparent text-white border border-white/20 hover:bg-white/10 hover:border-white/40',
+  primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8] focus-visible:ring-2 focus-visible:ring-[#2563EB]',
+  secondary: 'bg-[var(--surface-secondary)] text-[var(--text-primary)] hover:bg-[var(--surface-elevated)]',
+  ghost: 'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]',
+  danger: 'bg-rose-600 text-white hover:bg-rose-700 focus-visible:ring-2 focus-visible:ring-rose-500',
+  outline: 'bg-transparent text-[var(--text-primary)] hover:bg-[var(--surface-secondary)]',
+  'outline-light': 'bg-transparent text-white hover:bg-white/10',
 };
 
 const sizes = {
-  xs: 'px-2.5 py-1 text-xs gap-1.5 rounded-md',
-  sm: 'px-3.5 py-1.5 text-sm gap-2 rounded-lg',
-  md: 'px-5 py-2.5 text-sm gap-2 rounded-lg',
-  lg: 'px-6 py-3 text-base gap-2.5 rounded-xl',
-  xl: 'px-8 py-3.5 text-base gap-3 rounded-xl',
+  xs: 'px-2.5 py-1 text-xs gap-1.5 rounded-md font-medium',
+  sm: 'px-3 py-1.5 text-xs gap-1.5 rounded-md font-medium',
+  md: 'px-4 py-2 text-sm gap-2 rounded-md font-medium',
+  lg: 'px-5 py-2.5 text-sm gap-2 rounded-md font-semibold',
+  xl: 'px-6 py-3 text-base gap-2.5 rounded-md font-semibold',
+  icon: 'p-2 aspect-square rounded-md flex items-center justify-center shrink-0',
 };
 
 const Button = forwardRef(
@@ -32,41 +26,51 @@ const Button = forwardRef(
       variant = 'primary',
       size = 'md',
       isLoading = false,
+      loading = false,
       disabled = false,
       fullWidth = false,
+      circle = false,
       leftIcon: LeftIcon,
       rightIcon: RightIcon,
+      icon: Icon,
       className = '',
       as: Component = 'button',
       ...props
     },
     ref
   ) => {
-    const isDisabled = disabled || isLoading;
+    const isBusy = isLoading || loading;
+    const isDisabled = disabled || isBusy;
+    const ResolvedLeftIcon = LeftIcon || Icon;
+    const hasText = Boolean(children);
+    const isIconOnly = !hasText && Boolean(ResolvedLeftIcon || RightIcon);
 
     return (
       <Component
         ref={ref}
         disabled={isDisabled}
         className={`
-          inline-flex items-center justify-center font-medium
-          transition-all duration-200 ease-out
-          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500
-          disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+          inline-flex items-center justify-center
+          transition-colors duration-150 select-none
+          disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none
+          border-none outline-none
           ${variants[variant] || variants.primary}
-          ${sizes[size] || sizes.md}
+          ${isIconOnly ? sizes.icon : (sizes[size] || sizes.md)}
+          ${circle ? 'rounded-full' : 'rounded-md'}
           ${fullWidth ? 'w-full' : ''}
           ${className}
         `}
         {...props}
       >
-        {isLoading ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : LeftIcon ? (
-          <LeftIcon className="w-4 h-4 shrink-0" />
+        {isBusy ? (
+          <IconLoader2 className="w-4 h-4 animate-spin shrink-0" />
+        ) : !hasText && ResolvedLeftIcon ? (
+          <ResolvedLeftIcon className="w-4 h-4 shrink-0 stroke-[1.75]" />
         ) : null}
-        {children}
-        {RightIcon && !isLoading && <RightIcon className="w-4 h-4 shrink-0" />}
+        {hasText && <span>{children}</span>}
+        {!hasText && RightIcon && !isBusy && (
+          <RightIcon className="w-4 h-4 shrink-0 stroke-[1.75]" />
+        )}
       </Component>
     );
   }
@@ -76,19 +80,4 @@ Button.displayName = 'Button';
 
 export default Button;
 
-/**
- * MotionButton — Button with Framer Motion tap/hover animation
- */
-export const MotionButton = forwardRef(({ children, ...props }, ref) => (
-  <motion.div
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-  >
-    <Button ref={ref} {...props}>
-      {children}
-    </Button>
-  </motion.div>
-));
-
-MotionButton.displayName = 'MotionButton';
+export const MotionButton = Button;

@@ -1,26 +1,26 @@
 import { useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 
 const positions = {
   right: {
     container: 'justify-end',
-    panel: 'h-full ml-auto rounded-l-2xl',
+    panel: 'h-full ml-auto',
     initial: { x: '100%' },
     animate: { x: 0 },
     exit: { x: '100%' },
   },
   left: {
     container: 'justify-start',
-    panel: 'h-full mr-auto rounded-r-2xl',
+    panel: 'h-full mr-auto',
     initial: { x: '-100%' },
     animate: { x: 0 },
     exit: { x: '-100%' },
   },
   bottom: {
     container: 'items-end',
-    panel: 'w-full mt-auto rounded-t-2xl max-h-[85vh]',
+    panel: 'w-full mt-auto rounded-t-lg max-h-[85vh]',
     initial: { y: '100%' },
     animate: { y: 0 },
     exit: { y: '100%' },
@@ -73,7 +73,7 @@ const Drawer = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60"
             onClick={onClose}
           />
 
@@ -84,7 +84,7 @@ const Drawer = ({
             exit={pos.exit}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className={`
-              relative glass-heavy flex flex-col
+              relative bg-[var(--surface-primary)] flex flex-col shadow-2xl border-0
               ${pos.panel}
               ${position !== 'bottom' ? sizes[size] || sizes.md : ''}
               ${position !== 'bottom' ? 'w-full' : ''}
@@ -92,19 +92,19 @@ const Drawer = ({
           >
             {/* Header */}
             {(title || showClose) && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--glass-border)] shrink-0">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-transparent shrink-0">
                 {title && (
-                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+                  <h2 className="text-base font-semibold text-[var(--text-primary)]">
                     {title}
                   </h2>
                 )}
                 {showClose && (
                   <button
                     onClick={onClose}
-                    className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--glass-bg)] transition-colors"
+                    className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                     aria-label="Close drawer"
                   >
-                    <X className="w-5 h-5" />
+                    <IconX size={18} stroke={1.75} />
                   </button>
                 )}
               </div>
@@ -115,7 +115,7 @@ const Drawer = ({
 
             {/* Footer */}
             {footer && (
-              <div className="px-6 py-4 border-t border-[var(--glass-border)] shrink-0">
+              <div className="px-6 py-4 border-t border-transparent shrink-0">
                 {footer}
               </div>
             )}

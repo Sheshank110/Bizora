@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="75 55 500 280" width="100%" height="100%" fill="none">
+  <g fill="currentColor">
+    <!-- Small Dot -->
+    <circle cx="133.5" cy="118.5" r="44"/>
+    <!-- 3/4 Circle with Top-Left Cutout -->
+    <path d="M 202 72 A 125 125 0 1 1 91.5 185 L 202 185 Z"/>
+    <!-- Right Wedge with Rounded Corners -->
+    <path d="M 366 301 L 366 103 Q 366 74, 395 74 Q 405 74, 412 84 L 556 312 Q 562 321, 550 321 L 386 321 Q 366 321, 366 301 Z"/>
+  </g>
+</svg>

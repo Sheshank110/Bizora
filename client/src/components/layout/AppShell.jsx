@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import MobileSidebar from './MobileSidebar';
 
 /**
- * AppShell — The main authenticated application layout.
- * Renders: Sidebar (desktop) + MobileSidebar (mobile drawer) + Topbar + Page Content.
+ * AppShell — Main authenticated B2B workspace layout.
+ * Monochrome minimal: Sidebar + MobileSidebar + Topbar + Page content.
+ * NO container borders, NO aurora backgrounds, NO decorative glass.
  */
 const AppShell = () => {
   return (
@@ -23,15 +23,9 @@ const AppShell = () => {
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">
-          <motion.div
-            key={window.location.pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="p-4 sm:p-6 lg:p-8 min-h-full"
-          >
+          <div className="p-4 sm:p-6 lg:p-8 min-h-full max-w-7xl mx-auto">
             <Outlet />
-          </motion.div>
+          </div>
         </main>
       </div>
     </div>

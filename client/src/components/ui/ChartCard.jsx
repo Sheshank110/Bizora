@@ -1,8 +1,6 @@
-import GlassCard from './GlassCard';
-
 const ChartCard = ({ title, subtitle, children, actions, className = '', ...props }) => {
   return (
-    <GlassCard className={`flex flex-col ${className}`} {...props}>
+    <div className={`flex flex-col bg-[var(--surface-primary)] p-5 rounded-lg ${className}`} {...props}>
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">{title}</h3>
@@ -13,7 +11,7 @@ const ChartCard = ({ title, subtitle, children, actions, className = '', ...prop
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
       <div className="flex-1 min-h-0">{children}</div>
-    </GlassCard>
+    </div>
   );
 };
 

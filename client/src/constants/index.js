@@ -14,6 +14,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   VERIFY_EMAIL: '/verify-email',
+  ACCEPT_INVITE: '/accept-invite',
   ONBOARDING: '/onboarding',
 
   // App
@@ -44,8 +45,65 @@ export const ROUTES = {
   ADMIN_PLANS: '/admin/plans',
   ADMIN_AUDIT_LOGS: '/admin/audit-logs',
   ADMIN_SETTINGS: '/admin/settings',
+
+  // Client Portal
+  CLIENT: '/client',
+  CLIENT_DASHBOARD: '/client/dashboard',
+  CLIENT_PROJECTS: '/client/projects',
+  CLIENT_INVOICES: '/client/invoices',
+  CLIENT_FILES: '/client/files',
 };
 
+/**
+ * Grouped navigation structure requested for Dark Aurora Glass theme
+ */
+export const NAV_SECTIONS = [
+  {
+    title: null, // Standalone top
+    items: [
+      { label: 'Dashboard', path: ROUTES.DASHBOARD, icon: 'LayoutDashboard' },
+    ],
+  },
+  {
+    title: 'Business',
+    items: [
+      { label: 'Customers', path: ROUTES.CUSTOMERS, icon: 'Users' },
+      { label: 'Employees', path: ROUTES.EMPLOYEES, icon: 'UserCog' },
+    ],
+  },
+  {
+    title: 'Operations',
+    items: [
+      { label: 'Projects', path: ROUTES.PROJECTS, icon: 'FolderKanban' },
+      { label: 'Tasks', path: ROUTES.TASKS, icon: 'CheckSquare' },
+      { label: 'Services', path: ROUTES.SERVICES, icon: 'Briefcase' },
+    ],
+  },
+  {
+    title: 'Finance',
+    items: [
+      { label: 'Invoices', path: ROUTES.INVOICES, icon: 'FileText' },
+      { label: 'Payments', path: ROUTES.PAYMENTS, icon: 'CreditCard' },
+      { label: 'Expenses', path: ROUTES.EXPENSES, icon: 'Receipt' },
+    ],
+  },
+  {
+    title: 'Resources',
+    items: [
+      { label: 'Inventory', path: ROUTES.INVENTORY, icon: 'Package' },
+      { label: 'Reports', path: ROUTES.REPORTS, icon: 'BarChart3' },
+    ],
+  },
+  {
+    title: 'System',
+    items: [
+      { label: 'Activity', path: ROUTES.ACTIVITY, icon: 'Activity' },
+      { label: 'Settings', path: ROUTES.SETTINGS, icon: 'Settings' },
+    ],
+  },
+];
+
+// Flat lists for backwards compatibility with existing route lookups
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: ROUTES.DASHBOARD, icon: 'LayoutDashboard' },
   { label: 'Customers', path: ROUTES.CUSTOMERS, icon: 'Users' },

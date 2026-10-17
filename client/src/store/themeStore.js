@@ -8,7 +8,7 @@ import { persist } from 'zustand/middleware';
 export const useThemeStore = create(
   persist(
     (set, get) => ({
-      theme: 'system', // 'light' | 'dark' | 'system'
+      theme: 'dark', // 'dark' (Dark Aurora Glass - default) | 'light' | 'system'
 
       setTheme: (theme) => {
         set({ theme });

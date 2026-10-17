@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 const Pagination = ({
   currentPage,
@@ -32,22 +32,22 @@ const Pagination = ({
   };
 
   const btnBase =
-    'w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200';
+    'w-8 h-8 flex items-center justify-center rounded-md text-xs font-medium transition-colors';
 
   return (
-    <nav className={`flex items-center gap-1.5 ${className}`} aria-label="Pagination">
+    <nav className={`flex items-center gap-1 ${className}`} aria-label="Pagination">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`${btnBase} text-[var(--text-muted)] hover:bg-[var(--glass-bg)] disabled:opacity-30 disabled:pointer-events-none`}
+        className={`${btnBase} text-[var(--text-muted)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:pointer-events-none`}
         aria-label="Previous page"
       >
-        <ChevronLeft className="w-4 h-4" />
+        <IconChevronLeft size={16} stroke={1.75} />
       </button>
 
       {getPages().map((page, idx) =>
         page === '...' ? (
-          <span key={`ellipsis-${idx}`} className="w-9 h-9 flex items-center justify-center text-[var(--text-muted)] text-sm">
+          <span key={`ellipsis-${idx}`} className="w-8 h-8 flex items-center justify-center text-[var(--text-muted)] text-xs">
             ···
           </span>
         ) : (
@@ -56,8 +56,8 @@ const Pagination = ({
             onClick={() => onPageChange(page)}
             className={`${btnBase} ${
               page === currentPage
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-[var(--text-secondary)] hover:bg-[var(--glass-bg)]'
+                ? 'bg-[#2563EB] text-white'
+                : 'text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]'
             }`}
             aria-current={page === currentPage ? 'page' : undefined}
           >
@@ -69,10 +69,10 @@ const Pagination = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`${btnBase} text-[var(--text-muted)] hover:bg-[var(--glass-bg)] disabled:opacity-30 disabled:pointer-events-none`}
+        className={`${btnBase} text-[var(--text-muted)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:pointer-events-none`}
         aria-label="Next page"
       >
-        <ChevronRight className="w-4 h-4" />
+        <IconChevronRight size={16} stroke={1.75} />
       </button>
     </nav>
   );

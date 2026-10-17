@@ -1,70 +1,158 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Lock } from 'lucide-react';
-import { Button, Input, Checkbox, Alert } from '../../components/ui';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { IconMail, IconLock } from '@tabler/icons-react';
+import { Button, Input, Checkbox } from '../../components/ui';
 import AuthLayout from './AuthLayout';
 import { ROUTES } from '../../constants';
+import useAuth from '../../hooks/useAuth';
 
-/**
- * LoginPage — Phase 1 Foundation.
- * Authentication functionality will be implemented in Phase 2.
- * The form and UI are complete; backend integration is pending.
- */
+const loginSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Please enter a valid email'),
+  password: z.string().min(1, 'Password is required'),
+  remember: z.boolean().optional(),
+});
+
+const DEMO_ACCOUNTS = [
+  {
+    role: 'Founder',
+    name: 'Sheshank G.',
+    email: 'sheshankgahlawat2428@gmail.com',
+    password: 'Password123!',
+  },
+  {
+    role: 'Owner',
+    name: 'Alex Morgan',
+    email: 'owner@bizora.demo',
+    password: 'Password123!',
+  },
+  {
+    role: 'Manager',
+    name: 'Sarah Chen',
+    email: 'manager@bizora.demo',
+    password: 'Password123!',
+  },
+  {
+    role: 'Employee',
+    name: 'David Kim',
+    email: 'employee@bizora.demo',
+    password: 'Password123!',
+  },
+];
+
 const LoginPage = () => {
+  const { login, isLoggingIn } = useAuth();
+  const [activeDemo, setActiveDemo] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      remember: true,
+    },
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      await login({
+        email: data.email,
+        password: data.password,
+      });
+    } catch {
+      // Error toast handled by useAuth
+    }
+  };
+
+  const handleFillDemo = (account) => {
+    setValue('email', account.email, { shouldValidate: true });
+    setValue('password', account.password, { shouldValidate: true });
+    setActiveDemo(account.role);
+  };
+
   return (
     <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your Bizora account"
+      title="Sign in"
+      subtitle="Access your Bizora workspace"
       footerText="Don't have an account?"
       footerLink={ROUTES.REGISTER}
       footerLinkText="Create one free"
     >
-      <Alert variant="info" className="mb-6">
-        <strong>Phase 1:</strong> Authentication will be implemented in Phase 2. This form is a UI foundation only.
-      </Alert>
+      {/* Quick Switcher Banner */}
+      <div className="mb-6 p-3 rounded-lg bg-[var(--surface-secondary)]">
+        <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+          Quick Sign In Accounts
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+          {DEMO_ACCOUNTS.map((acc) => (
+            <button
+              key={acc.role}
+              type="button"
+              onClick={() => handleFillDemo(acc)}
+              className={`p-2 rounded text-left transition-colors text-xs flex flex-col gap-0.5 ${
+                activeDemo === acc.role
+                  ? 'bg-[#2563EB] text-white font-semibold'
+                  : 'bg-[var(--surface-primary)] text-[var(--text-primary)] hover:bg-[#EFEFEF] dark:hover:bg-[#181818]'
+              }`}
+            >
+              <span className="font-medium truncate">{acc.role}</span>
+              <span className={`text-[10px] truncate ${activeDemo === acc.role ? 'text-blue-100' : 'text-[var(--text-muted)]'}`}>
+                {acc.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <form className="space-y-4" onSubmit={(e) => e.preventDefault()} noValidate>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Input
           label="Email address"
           type="email"
-          name="email"
           placeholder="you@company.com"
-          leftIcon={Mail}
+          leftIcon={IconMail}
           required
           autoComplete="email"
+          error={errors.email?.message}
+          {...register('email')}
         />
 
         <Input
           label="Password"
           type="password"
-          name="password"
-          placeholder="Your password"
-          leftIcon={Lock}
+          placeholder="Enter your password"
+          leftIcon={IconLock}
           required
           autoComplete="current-password"
+          error={errors.password?.message}
+          {...register('password')}
         />
 
-        <div className="flex items-center justify-between">
-          <Checkbox label="Remember me" name="remember" />
+        <div className="flex items-center justify-between text-xs">
+          <Checkbox label="Remember me" {...register('remember')} />
           <Link
             to={ROUTES.FORGOT_PASSWORD}
-            className="text-sm text-brand-400 hover:text-brand-300 transition-colors"
+            className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
           >
             Forgot password?
           </Link>
         </div>
 
-        <Button type="submit" variant="primary" fullWidth size="lg" disabled>
-          Sign in (Phase 2)
-        </Button>
-
-        <div className="relative flex items-center gap-3 my-2">
-          <div className="flex-1 h-px bg-[var(--border-default)]" />
-          <span className="text-xs text-[var(--text-muted)]">or</span>
-          <div className="flex-1 h-px bg-[var(--border-default)]" />
-        </div>
-
-        <Button type="button" variant="secondary" fullWidth disabled>
-          Continue with Google (Phase 2)
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
+          size="md"
+          loading={isLoggingIn}
+          disabled={isLoggingIn}
+        >
+          {isLoggingIn ? 'Signing in...' : 'Sign In'}
         </Button>
       </form>
     </AuthLayout>

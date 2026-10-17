@@ -1,21 +1,15 @@
-/**
- * GlassPanel — A larger glass surface for sections/panels.
- */
-const GlassPanel = ({ children, className = '', blur = 'default', ...props }) => {
-  const blurs = {
-    light: 'backdrop-blur-sm',
-    default: 'backdrop-blur-md',
-    heavy: 'backdrop-blur-xl',
-  };
+import React from 'react';
 
+/**
+ * GlassPanel — Converted to Clean Monochrome Panel
+ */
+const GlassPanel = ({ children, className = '', ...props }) => {
   return (
     <div
       className={`
-        rounded-2xl
-        bg-[var(--glass-bg)]
-        ${blurs[blur] || blurs.default}
-        border border-[var(--glass-border)]
-        shadow-[var(--glass-shadow)]
+        rounded-xl
+        bg-[var(--surface-secondary)]
+        border-none shadow-none
         ${className}
       `}
       {...props}

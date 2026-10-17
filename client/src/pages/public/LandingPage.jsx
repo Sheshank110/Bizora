@@ -1,392 +1,438 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import {
-  Zap, Users, FolderKanban, FileText, BarChart3,
-  ArrowRight, CheckCircle2, Star, Menu, X
-} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, MotionButton, GlassCard, Badge } from '../../components/ui';
-import { ROUTES, APP_NAME, APP_TAGLINE } from '../../constants';
+import {
+  IconArrowRight,
+  IconCheck,
+  IconMenu2,
+  IconX,
+  IconUsers,
+  IconFolder,
+  IconReceipt,
+  IconShieldLock,
+  IconChartBar,
+  IconSparkles,
+  IconClock,
+  IconFileText,
+  IconSun,
+  IconMoon,
+} from '@tabler/icons-react';
+import { Button, Logo, GlassmorphismHeroMockup } from '../../components/ui';
+import { ROUTES } from '../../constants';
+import authService from '../../services/authService';
+import useAuthStore from '../../store/authStore';
+import useBusinessStore from '../../store/businessStore';
+import { useThemeStore } from '../../store/themeStore';
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: 'easeOut' },
-};
+const ThemeToggle = () => {
+  const { theme, setTheme } = useThemeStore();
+  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-const stagger = {
-  animate: { transition: { staggerChildren: 0.1 } },
-};
-
-const featureCards = [
-  {
-    icon: Users,
-    title: 'Customer Management',
-    description: 'Centralize all your customer data, track interactions, and never miss a follow-up.',
-    color: 'text-brand-400',
-    bg: 'bg-brand-500/10',
-  },
-  {
-    icon: FolderKanban,
-    title: 'Project Tracking',
-    description: 'Visualize progress with Kanban boards, set milestones, and keep teams aligned.',
-    color: 'text-emerald-500',
-    bg: 'bg-emerald-500/10',
-  },
-  {
-    icon: FileText,
-    title: 'Invoicing',
-    description: 'Create professional invoices in seconds, send them, and track payment status.',
-    color: 'text-amber-500',
-    bg: 'bg-amber-500/10',
-  },
-  {
-    icon: BarChart3,
-    title: 'Business Analytics',
-    description: 'Understand revenue trends, expenses, and profitability at a glance.',
-    color: 'text-sky-500',
-    bg: 'bg-sky-500/10',
-  },
-];
-
-const stats = [
-  { value: '10,000+', label: 'Businesses' },
-  { value: '$2.4B', label: 'Invoiced' },
-  { value: '99.9%', label: 'Uptime' },
-  { value: '4.9★', label: 'Rating' },
-];
-
-const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const toggle = () => {
+    setTheme(isDark ? 'light' : 'dark');
+  };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--glass-border)] bg-[var(--topbar-bg)] backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6">
-        {/* Logo */}
-        <Link to={ROUTES.HOME} className="flex items-center gap-2 shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-base font-bold text-[var(--text-primary)] tracking-tight">
-            {APP_NAME}
-          </span>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {['Product', 'Features', 'Pricing'].map((item) => (
-            <Link
-              key={item}
-              to={item === 'Pricing' ? ROUTES.PRICING : '#'}
-              className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              {item}
-            </Link>
-          ))}
-        </nav>
-
-        {/* CTAs */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link to={ROUTES.LOGIN} className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
-            Sign in
-          </Link>
-          <Button as={Link} to={ROUTES.REGISTER} variant="primary" size="sm">
-            Start Free
-          </Button>
-        </div>
-
-        {/* Mobile menu toggle */}
-        <button
-          className="md:hidden p-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--glass-bg)] transition-colors"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden border-t border-[var(--glass-border)] px-4 py-4 space-y-3 bg-[var(--surface-secondary)]"
-        >
-          {['Product', 'Features', 'Pricing'].map((item) => (
-            <Link
-              key={item}
-              to={item === 'Pricing' ? ROUTES.PRICING : '#'}
-              className="block text-sm text-[var(--text-secondary)] py-1"
-              onClick={() => setMenuOpen(false)}
-            >
-              {item}
-            </Link>
-          ))}
-          <div className="flex flex-col gap-2 pt-2 border-t border-[var(--border-default)]">
-            <Button as={Link} to={ROUTES.LOGIN} variant="secondary" fullWidth>Sign in</Button>
-            <Button as={Link} to={ROUTES.REGISTER} variant="primary" fullWidth>Start Free</Button>
-          </div>
-        </motion.div>
-      )}
-    </header>
+    <button
+      onClick={toggle}
+      className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-neutral-100 dark:hover:bg-[#222222] transition-colors"
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      {isDark ? <IconSun size={15} stroke={1.75} /> : <IconMoon size={15} stroke={1.75} />}
+    </button>
   );
 };
 
-const HeroDemoPreview = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 32, scale: 0.97 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    transition={{ delay: 0.4, duration: 0.6, ease: 'easeOut' }}
-    className="relative mt-16 max-w-5xl mx-auto"
-  >
-    {/* Glow */}
-    <div className="absolute -inset-4 bg-brand-500/10 rounded-3xl blur-3xl pointer-events-none" />
+export const LandingPage = () => {
+  const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const { setAuth } = useAuthStore();
+  const { setBusinesses, setActiveBusiness } = useBusinessStore();
 
-    {/* Browser chrome */}
-    <div className="relative glass-heavy rounded-2xl overflow-hidden border border-[var(--glass-border)]">
-      {/* Browser bar */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-[var(--glass-border)] bg-[var(--glass-bg)]">
-        <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-rose-500/60" />
-          <div className="w-3 h-3 rounded-full bg-amber-500/60" />
-          <div className="w-3 h-3 rounded-full bg-emerald-500/60" />
-        </div>
-        <div className="flex-1 mx-4 h-6 bg-[var(--glass-bg)] rounded-md flex items-center px-3">
-          <span className="text-xs text-[var(--text-muted)]">app.bizora.io/dashboard</span>
-        </div>
-      </div>
+  const handleLaunchDemo = async () => {
+    try {
+      setIsDemoLoading(true);
+      const res = await authService.login({
+        email: 'owner@bizora.demo',
+        password: 'Password123!',
+      });
+      if (res?.data?.accessToken) {
+        setAuth(res.data.user, res.data.accessToken);
+        if (res.data.businesses) {
+          setBusinesses(res.data.businesses);
+          setActiveBusiness(res.data.businesses[0]);
+        }
+        navigate(ROUTES.DASHBOARD);
+      }
+    } catch {
+      navigate(ROUTES.LOGIN);
+    } finally {
+      setIsDemoLoading(false);
+    }
+  };
 
-      {/* Mock UI */}
-      <div className="flex h-[340px] sm:h-[400px]">
-        {/* Sidebar preview */}
-        <div className="w-44 shrink-0 border-r border-[var(--glass-border)] p-3 space-y-1.5 hidden sm:block bg-[var(--sidebar-bg)]">
-          <div className="flex items-center gap-2 px-2 py-2 rounded-lg bg-[var(--sidebar-item-active)]">
-            <div className="w-3.5 h-3.5 rounded bg-brand-500/40" />
-            <div className="h-2.5 w-16 bg-brand-400/60 rounded" />
-          </div>
-          {[70, 60, 80, 55, 65, 72].map((w, i) => (
-            <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg">
-              <div className="w-3.5 h-3.5 rounded bg-[var(--glass-bg-heavy)]" />
-              <div className={`h-2 w-${w > 70 ? '20' : w > 60 ? '16' : '14'} bg-[var(--glass-bg-heavy)] rounded`} />
-            </div>
-          ))}
-        </div>
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const isMobileOrTall = el.offsetHeight > window.innerHeight - 100;
+      el.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: isMobileOrTall ? 'start' : 'center' 
+      });
+    }
+  };
 
-        {/* Content preview */}
-        <div className="flex-1 p-5 space-y-4 overflow-hidden">
-          {/* KPI row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {['$48,290', '142', '28', '$12.4k'].map((val, i) => (
-              <div key={i} className="glass rounded-xl p-3">
-                <div className="h-1.5 w-12 bg-[var(--glass-bg-heavy)] rounded mb-2" />
-                <div className={`h-5 ${i === 0 ? 'w-20' : i === 1 ? 'w-10' : i === 2 ? 'w-8' : 'w-16'} bg-[var(--text-muted)]/30 rounded`} />
-              </div>
-            ))}
-          </div>
-
-          {/* Chart preview */}
-          <div className="glass rounded-xl p-4 flex-1">
-            <div className="h-2 w-24 bg-[var(--glass-bg-heavy)] rounded mb-4" />
-            <div className="flex items-end gap-2 h-28">
-              {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 88].map((h, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-t-sm bg-brand-500/20 relative"
-                  style={{ height: `${h}%` }}
-                >
-                  {i === 9 && (
-                    <div className="absolute inset-0 rounded-t-sm bg-brand-500/50" />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </motion.div>
-);
-
-const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-[var(--surface-primary)]">
-      <Navbar />
+    <div className="min-h-screen bg-[var(--surface-primary)] text-[var(--text-primary)] relative selection:bg-neutral-200 dark:selection:bg-neutral-800">
+      {/* Background Architectural Grid Pattern */}
+      <div 
+        aria-hidden="true" 
+        className="absolute inset-0 bg-grid-pattern opacity-60 dark:opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_top,black_40%,transparent_80%)]" 
+      />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden px-4 sm:px-6 pt-20 pb-8">
-        <div className="bg-gradient-hero absolute inset-0 pointer-events-none" />
+      {/* Floating Pill-Style Topbar (Matches reference image navbar) */}
+      <div className="sticky top-4 z-50 max-w-5xl mx-auto px-4 select-none">
+        <header className="bg-white/85 dark:bg-[#111111]/90 backdrop-blur-md rounded-2xl sm:rounded-full px-5 sm:px-7 py-3 border border-neutral-200/60 dark:border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.7)] flex items-center justify-between transition-all">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <Logo to={ROUTES.HOME} variant="horizontal" size="sm" />
+          </div>
 
-        <motion.div
-          variants={stagger}
-          initial="initial"
-          animate="animate"
-          className="max-w-4xl mx-auto text-center relative"
-        >
-          <motion.div {...fadeUp}>
-            <Badge variant="primary" className="mb-6">
-              <Zap className="w-3 h-3" />
-              Phase 1 — Foundation Release
-            </Badge>
-          </motion.div>
+          {/* Right Navigation & Action Buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <nav className="hidden md:flex items-center gap-6 mr-1 text-xs font-medium text-[var(--text-secondary)]">
+              <button
+                onClick={() => scrollToSection('capabilities')}
+                className="hover:text-[var(--text-primary)] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600 rounded"
+              >
+                Features
+              </button>
+              <button
+                onClick={() => scrollToSection('insights')}
+                className="hover:text-[var(--text-primary)] transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600 rounded"
+              >
+                Workflow
+              </button>
+              <Link 
+                to={ROUTES.PRICING} 
+                className="hover:text-[var(--text-primary)] transition-colors"
+              >
+                Pricing
+              </Link>
+            </nav>
 
-          <motion.h1
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-[var(--text-primary)] mb-6"
-          >
-            Run your business from{' '}
-            <span className="text-gradient-brand">one powerful workspace.</span>
-          </motion.h1>
+            <button
+              onClick={handleLaunchDemo}
+              disabled={isDemoLoading}
+              className="hidden sm:inline-flex items-center justify-center rounded-full px-3.5 py-1.5 text-xs font-semibold bg-neutral-100 hover:bg-neutral-200 dark:bg-[#1E1E1E] dark:hover:bg-[#282828] text-[var(--text-primary)] transition-colors border border-neutral-200/80 dark:border-white/10"
+            >
+              {isDemoLoading ? 'Launching...' : 'Live Demo'}
+            </button>
 
-          <motion.p
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-lg sm:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Manage customers, projects, tasks, invoices, payments and daily operations
-            from one modern platform. Business management, simplified.
-          </motion.p>
+            <ThemeToggle />
 
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <MotionButton
+            <Link 
+              to={ROUTES.LOGIN} 
+              className="text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors px-2.5 py-1.5"
+            >
+              Login
+            </Link>
+            <Button 
+              as={Link} 
+              to={ROUTES.REGISTER} 
+              className="rounded-full px-5 py-2 text-xs font-semibold bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 transition-all shadow-sm"
+            >
+              Sign Up
+            </Button>
+
+            {/* Mobile menu toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <IconX size={18} stroke={2} /> : <IconMenu2 size={18} stroke={2} />}
+            </button>
+          </div>
+        </header>
+
+        {/* Mobile dropdown menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-2 p-4 rounded-2xl bg-white dark:bg-[#141414] shadow-2xl border border-neutral-100 dark:border-neutral-800 space-y-3 text-xs">
+            <div className="flex items-center justify-between py-1.5 text-[var(--text-secondary)]">
+              <span>Theme</span>
+              <ThemeToggle />
+            </div>
+            <button
+              onClick={() => { scrollToSection('capabilities'); setMobileMenuOpen(false); }}
+              className="block w-full text-left py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => { scrollToSection('insights'); setMobileMenuOpen(false); }}
+              className="block w-full text-left py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium"
+            >
+              Workflow
+            </button>
+            <Link to={ROUTES.PRICING} className="block py-1.5 text-[var(--text-primary)] font-medium">
+              Pricing
+            </Link>
+            <button
+              onClick={() => { setMobileMenuOpen(false); handleLaunchDemo(); }}
+              disabled={isDemoLoading}
+              className="block w-full text-left py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium"
+            >
+              {isDemoLoading ? 'Launching Demo...' : 'Live Demo'}
+            </button>
+            <Link to={ROUTES.LOGIN} className="block py-1.5 text-[var(--text-secondary)]">
+              Login
+            </Link>
+            <Button as={Link} to={ROUTES.REGISTER} variant="primary" size="sm" fullWidth className="rounded-full mt-2">
+              Sign Up
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Area */}
+      <main className="relative z-10">
+        {/* Centered Hero Section (Matches reference layout & typography) */}
+        <section className="pt-16 sm:pt-24 pb-8 max-w-5xl mx-auto px-4 text-center">
+          {/* Top Eyebrow Tag */}
+          <div className="mb-4 sm:mb-5">
+            <span className="inline-block text-[11px] font-semibold tracking-[0.22em] uppercase text-[var(--text-muted)]">
+              ALL-IN-ONE BUSINESS OPERATIONS PLATFORM
+            </span>
+          </div>
+
+          {/* Primary Headline with Italic Serif Accent */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-bold tracking-tight text-[var(--text-primary)] leading-[1.08] max-w-4xl mx-auto">
+            Run your business from
+            <br />
+            <span className="font-serif italic font-normal tracking-normal text-[var(--text-primary)]">one unified</span> workspace.
+          </h1>
+
+          {/* Subtitle Description */}
+          <p className="mt-5 sm:mt-6 text-sm sm:text-base md:text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed font-normal">
+            Manage clients, projects, tasks, invoices, and cashflow in one seamless platform. Built for modern businesses that prioritize speed, clarity, and control.
+          </p>
+
+          {/* Dual Pill CTA Buttons (Centered) */}
+          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3.5">
+            <Button
               as={Link}
               to={ROUTES.REGISTER}
-              variant="primary"
-              size="lg"
-              rightIcon={ArrowRight}
+              className="rounded-full px-7 py-3 text-xs sm:text-sm font-semibold bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 shadow-md transition-all"
             >
-              Start Free
-            </MotionButton>
-            <MotionButton
-              as={Link}
-              to={ROUTES.DASHBOARD}
-              variant="secondary"
-              size="lg"
+              Start Free Workspace
+            </Button>
+
+            <button
+              onClick={handleLaunchDemo}
+              disabled={isDemoLoading}
+              className="rounded-full px-7 py-3 text-xs sm:text-sm font-semibold bg-transparent text-[var(--text-primary)] border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
             >
-              View Demo
-            </MotionButton>
-          </motion.div>
-        </motion.div>
-
-        {/* Demo preview */}
-        <HeroDemoPreview />
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4 sm:px-6 border-y border-[var(--border-default)]">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-              className="text-center"
-            >
-              <p className="text-3xl font-extrabold text-[var(--text-primary)]">{stat.value}</p>
-              <p className="text-sm text-[var(--text-muted)] mt-1">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-14"
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-              Everything your business needs
-            </h2>
-            <p className="text-[var(--text-muted)] max-w-xl mx-auto">
-              A complete suite of tools designed for modern small businesses — from first customer to last invoice.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featureCards.map((card, i) => (
-              <GlassCard
-                key={card.title}
-                animate
-                hover
-                delay={i * 0.1}
-                variant="interactive"
-              >
-                <div className={`w-11 h-11 rounded-xl ${card.bg} flex items-center justify-center mb-4`}>
-                  <card.icon className={`w-5 h-5 ${card.color}`} />
-                </div>
-                <h3 className="text-base font-semibold text-[var(--text-primary)] mb-2">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                  {card.description}
-                </p>
-              </GlassCard>
-            ))}
+              {isDemoLoading ? 'Launching Sandbox...' : 'Explore Live Demo'}
+            </button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <GlassCard variant="highlight" className="py-14 px-8">
-            <div className="w-14 h-14 rounded-2xl bg-brand-600 flex items-center justify-center mx-auto mb-6">
-              <Zap className="w-7 h-7 text-white" />
-            </div>
-            <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-3">
-              Ready to simplify your business?
-            </h2>
-            <p className="text-[var(--text-muted)] mb-8 max-w-md mx-auto">
-              Join thousands of businesses using Bizora to manage operations, delight customers, and grow faster.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <MotionButton as={Link} to={ROUTES.REGISTER} variant="primary" size="lg" rightIcon={ArrowRight}>
-                Get started free
-              </MotionButton>
-              <MotionButton as={Link} to={ROUTES.PRICING} variant="secondary" size="lg">
-                View pricing
-              </MotionButton>
-            </div>
-            <div className="flex items-center justify-center gap-6 mt-8 text-xs text-[var(--text-muted)]">
-              {['No credit card required', 'Free 14-day trial', 'Cancel anytime'].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                  {item}
-                </span>
-              ))}
-            </div>
-          </GlassCard>
-        </motion.div>
-      </section>
+        {/* Signature Layered Browser Mockup (Matches reference preview) */}
+        <section className="px-2 sm:px-4">
+          <GlassmorphismHeroMockup onOpenDemo={handleLaunchDemo} isDemoLoading={isDemoLoading} />
+        </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[var(--border-default)] py-10 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-brand-600 flex items-center justify-center">
-              <Zap className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">{APP_NAME}</span>
-            <span className="text-xs text-[var(--text-muted)]">— {APP_TAGLINE}</span>
-          </div>
-          <p className="text-xs text-[var(--text-muted)]">
-            © {new Date().getFullYear()} {APP_NAME}. Phase 1 — Foundation Release.
+        {/* Client Trust Logos Strip */}
+        <section className="max-w-5xl mx-auto px-4 py-12 border-t border-transparent text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)] mb-8">
+            Trusted by fast-moving companies, agencies, and growing businesses worldwide
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-60 grayscale hover:grayscale-0 transition-all">
+            <span className="font-semibold text-sm tracking-widest text-[var(--text-secondary)]">VANGUARD MED</span>
+            <span className="font-semibold text-sm tracking-widest text-[var(--text-secondary)]">APEX CAPITAL</span>
+            <span className="font-semibold text-sm tracking-widest text-[var(--text-secondary)]">MERIDIAN LABS</span>
+            <span className="font-semibold text-sm tracking-widest text-[var(--text-secondary)]">COBALT SYSTEMS</span>
+            <span className="font-semibold text-sm tracking-widest text-[var(--text-secondary)]">NEXUS RETAIL</span>
+          </div>
+        </section>
+
+        {/* Core Capabilities Bento Section */}
+        <section 
+          id="capabilities" 
+          className="max-w-6xl mx-auto px-4 sm:px-6 min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 sm:py-24 scroll-mt-24"
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[var(--text-muted)] block mb-2">
+              CORE CAPABILITIES
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+              Everything you need to run daily operations
+            </h2>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-3 leading-relaxed">
+              Eliminate tool fatigue. Connect your client pipeline, project delivery, and automated billing in a single high-performance workspace.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Capability 1: Client CRM */}
+            <div className="p-6 rounded-2xl bg-[#F9F9F9] dark:bg-[#121212] transition-all hover:-translate-y-1">
+              <div className="w-9 h-9 rounded-xl bg-white dark:bg-[#1A1A1A] flex items-center justify-center mb-4 shadow-sm">
+                <IconUsers size={18} stroke={1.75} className="text-[#2563EB]" />
+              </div>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
+                Client Directory &amp; CRM
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                Maintain accurate records of every client, assigned team leads, interaction history, notes, and engagement scopes.
+              </p>
+            </div>
+
+            {/* Capability 2: Kanban Delivery */}
+            <div className="p-6 rounded-2xl bg-[#F9F9F9] dark:bg-[#121212] transition-all hover:-translate-y-1">
+              <div className="w-9 h-9 rounded-xl bg-white dark:bg-[#1A1A1A] flex items-center justify-center mb-4 shadow-sm">
+                <IconFolder size={18} stroke={1.75} className="text-[#2563EB]" />
+              </div>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
+                Kanban Project Delivery
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                Track deliverables through structured stages (To Do, In Progress, Review, Completed) with automatic deadline calculations.
+              </p>
+            </div>
+
+            {/* Capability 3: Invoicing */}
+            <div className="p-6 rounded-2xl bg-[#F9F9F9] dark:bg-[#121212] transition-all hover:-translate-y-1">
+              <div className="w-9 h-9 rounded-xl bg-white dark:bg-[#1A1A1A] flex items-center justify-center mb-4 shadow-sm">
+                <IconReceipt size={18} stroke={1.75} className="text-[#2563EB]" />
+              </div>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
+                Invoicing &amp; Cashflow
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                Generate itemized tax invoices, record real-time settlements, track operating expenses, and export statements.
+              </p>
+            </div>
+
+            {/* Capability 4: Security */}
+            <div className="p-6 rounded-2xl bg-[#F9F9F9] dark:bg-[#121212] transition-all hover:-translate-y-1">
+              <div className="w-9 h-9 rounded-xl bg-white dark:bg-[#1A1A1A] flex items-center justify-center mb-4 shadow-sm">
+                <IconShieldLock size={18} stroke={1.75} className="text-[#2563EB]" />
+              </div>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
+                Enterprise Multi-Tenancy
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                Strict database workspace isolation, JWT tokens, audit logging, and granular role permissions across members.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Operational Workflow Section */}
+        <section 
+          id="insights" 
+          className="max-w-5xl mx-auto px-4 min-h-[calc(100vh-5rem)] flex flex-col justify-center py-16 sm:py-24 scroll-mt-24"
+        >
+          <div className="p-8 sm:p-12 rounded-3xl bg-[#F9F9F9] dark:bg-[#121212] flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="max-w-md">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)] block mb-2">
+                OPERATIONAL EFFICIENCY
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+                Turn hours of administrative drag into minutes of execution
+              </h3>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-3 leading-relaxed">
+                Bizora provides founders and team leads with real-time visibility across client relationships, project throughput, and financial performance without manual status syncs.
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <Button 
+                  as={Link} 
+                  to={ROUTES.REGISTER} 
+                  className="rounded-full px-6 py-2.5 text-xs font-semibold bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 transition-all shadow-sm"
+                >
+                  Start Free Workspace
+                </Button>
+                <button
+                  onClick={handleLaunchDemo}
+                  disabled={isDemoLoading}
+                  className="rounded-full px-6 py-2.5 text-xs font-semibold bg-transparent text-[var(--text-primary)] border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+                >
+                  Try Interactive Demo
+                </button>
+              </div>
+            </div>
+
+            <div className="w-full md:w-72 space-y-3 font-mono text-xs">
+              <div className="p-3.5 rounded-xl bg-white dark:bg-[#1A1A1A] shadow-sm">
+                <span className="text-[10px] text-[var(--text-muted)] block">INVOICE COLLECTION VELOCITY</span>
+                <span className="text-xl font-bold text-[var(--text-primary)] mt-0.5 block">4.2x Faster</span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-white dark:bg-[#1A1A1A] shadow-sm">
+                <span className="text-[10px] text-[var(--text-muted)] block">PROJECT MILESTONE ACCURACY</span>
+                <span className="text-xl font-bold text-[var(--text-primary)] mt-0.5 block">99.4% On Schedule</span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-white dark:bg-[#1A1A1A] shadow-sm">
+                <span className="text-[10px] text-[var(--text-muted)] block">ORGANIZATIONAL OVERHEAD</span>
+                <span className="text-xl font-bold text-[var(--text-primary)] mt-0.5 block">-38% Admin Hours</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pre-Footer Call to Action (Centered pill layout matching hero) */}
+        <section className="py-24 sm:py-32 px-4 text-center max-w-4xl mx-auto min-h-[60vh] flex flex-col justify-center">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)] block mb-3">
+            GET STARTED TODAY
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--text-primary)] leading-tight">
+            Ready to streamline your <span className="font-serif italic font-normal tracking-normal text-[var(--text-primary)]">business operations</span>?
+          </h2>
+          <p className="text-sm sm:text-base text-[var(--text-secondary)] mt-4 max-w-xl mx-auto leading-relaxed">
+            Join modern teams using Bizora to organize projects, bill clients faster, and run day-to-day operations with ease. No credit card required to begin.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              as={Link}
+              to={ROUTES.REGISTER}
+              className="rounded-full px-8 py-3.5 text-xs sm:text-sm font-semibold bg-black text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200 shadow-md transition-all"
+            >
+              Start Free Workspace
+            </Button>
+            <Link
+              to={ROUTES.PRICING}
+              className="rounded-full px-8 py-3.5 text-xs sm:text-sm font-semibold bg-transparent text-[var(--text-primary)] border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
+            >
+              Review Pricing Plans
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      {/* Editorial Monochrome Footer */}
+      <footer className="max-w-6xl mx-auto px-4 sm:px-6 py-12 border-t border-[#F0F0F0] dark:border-[#1A1A1A] text-xs text-[var(--text-muted)]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <Logo to={ROUTES.HOME} variant="horizontal" size="sm" />
+            <span className="text-[11px] text-[var(--text-muted)]">
+              &copy; {new Date().getFullYear()} Bizora Technologies Inc. All rights reserved.
+            </span>
+          </div>
+          <div className="flex items-center gap-6">
+            <Link to={ROUTES.PRICING} className="hover:text-[var(--text-primary)] transition-colors">
+              Pricing
+            </Link>
+            <Link to={ROUTES.LOGIN} className="hover:text-[var(--text-primary)] transition-colors">
+              Sign In
+            </Link>
+            <Link to={ROUTES.REGISTER} className="hover:text-[var(--text-primary)] transition-colors">
+              Get Started
+            </Link>
+            <a href="#capabilities" className="hover:text-[var(--text-primary)] transition-colors">
+              Security
+            </a>
+          </div>
         </div>
       </footer>
     </div>

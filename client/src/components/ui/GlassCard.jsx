@@ -1,20 +1,17 @@
-import { motion } from 'framer-motion';
-
-const variantStyles = {
-  default: 'glass',
-  subtle: 'glass-subtle',
-  interactive: 'glass-interactive',
-  highlight: 'glass border-brand-500/20 shadow-brand-500/5',
-  danger: 'glass border-rose-500/20',
-};
+import React from 'react';
 
 const paddings = {
   none: '',
+  xs: 'p-3',
   sm: 'p-4',
   md: 'p-6',
   lg: 'p-8',
 };
 
+/**
+ * GlassCard — Converted to Clean Monochrome Surface
+ * Strict enforcement: NO container borders, NO glassmorphism, NO neon glows.
+ */
 const GlassCard = ({
   children,
   variant = 'default',
@@ -25,30 +22,17 @@ const GlassCard = ({
   hover = false,
   ...props
 }) => {
-  const baseClasses = `
-    rounded-xl
-    ${variantStyles[variant] || variantStyles.default}
-    ${paddings[padding] || paddings.md}
-    ${className}
-  `;
-
-  if (animate) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay, ease: 'easeOut' }}
-        whileHover={hover ? { y: -2, transition: { duration: 0.2 } } : undefined}
-        className={baseClasses}
-        {...props}
-      >
-        {children}
-      </motion.div>
-    );
-  }
-
   return (
-    <div className={baseClasses} {...props}>
+    <div
+      className={`
+        rounded-lg
+        bg-[var(--surface-secondary)]
+        border-none shadow-none
+        ${paddings[padding] || paddings.md}
+        ${className}
+      `}
+      {...props}
+    >
       {children}
     </div>
   );

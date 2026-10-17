@@ -1,4 +1,10 @@
-const Card = ({ children, className = '', padding = 'md', ...props }) => {
+import React from 'react';
+
+/**
+ * Card — Clean Monochrome Surface
+ * Strict enforcement: NO container borders, restrained 8px radius, no heavy shadows.
+ */
+const Card = ({ children, className = '', padding = 'md', solid = false, ...props }) => {
   const paddings = {
     none: '',
     sm: 'p-4',
@@ -9,8 +15,9 @@ const Card = ({ children, className = '', padding = 'md', ...props }) => {
   return (
     <div
       className={`
-        rounded-xl bg-[var(--surface-secondary)]
-        border border-[var(--border-default)]
+        rounded-lg
+        bg-[var(--surface-secondary)]
+        border-none shadow-none
         ${paddings[padding] || paddings.md}
         ${className}
       `}

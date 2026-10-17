@@ -28,12 +28,12 @@ const connectDB = async () => {
 
     return conn;
   } catch (error) {
-    logger.error(`MongoDB connection failed: ${error.message}`);
-    // In development, continue without DB so frontend can still be developed
+    // In development, handle gracefully without crashing or alarming errors
     if (env.isDev) {
-      logger.warn('Continuing without database in development mode');
+      logger.warn(`Local MongoDB not detected (${error.message}). Running with built-in in-memory DevMockDb.`);
       return null;
     }
+    logger.error(`MongoDB connection failed: ${error.message}`);
     process.exit(1);
   }
 };

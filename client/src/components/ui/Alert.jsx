@@ -1,26 +1,26 @@
-import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
+import { IconCircleCheck, IconAlertCircle, IconAlertTriangle, IconInfoCircle, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 
 const variants = {
   info: {
-    bg: 'bg-brand-500/10 border-brand-500/25',
-    icon: Info,
-    iconColor: 'text-brand-400',
+    bg: 'bg-[var(--surface-secondary)] text-[var(--text-primary)]',
+    icon: IconInfoCircle,
+    iconColor: 'text-[#2563EB]',
   },
   success: {
-    bg: 'bg-emerald-500/10 border-emerald-500/25',
-    icon: CheckCircle2,
-    iconColor: 'text-emerald-500',
+    bg: 'bg-[var(--surface-secondary)] text-[var(--text-primary)]',
+    icon: IconCircleCheck,
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
   },
   warning: {
-    bg: 'bg-amber-500/10 border-amber-500/25',
-    icon: AlertTriangle,
-    iconColor: 'text-amber-500',
+    bg: 'bg-[var(--surface-secondary)] text-[var(--text-primary)]',
+    icon: IconAlertTriangle,
+    iconColor: 'text-amber-600 dark:text-amber-400',
   },
   error: {
-    bg: 'bg-rose-500/10 border-rose-500/25',
-    icon: AlertCircle,
-    iconColor: 'text-rose-500',
+    bg: 'bg-[var(--surface-secondary)] text-[var(--text-primary)]',
+    icon: IconAlertCircle,
+    iconColor: 'text-rose-600 dark:text-rose-400',
   },
 };
 
@@ -42,19 +42,19 @@ const Alert = ({
     <div
       role="alert"
       className={`
-        flex items-start gap-3 px-4 py-3.5 rounded-xl
-        border ${v.bg}
+        flex items-start gap-3 px-4 py-3 rounded-md
+        border-0 ${v.bg}
         ${className}
       `}
     >
-      <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${v.iconColor}`} />
+      <Icon size={18} stroke={1.75} className={`shrink-0 mt-0.5 ${v.iconColor}`} />
       <div className="flex-1 min-w-0">
         {title && (
           <p className="text-sm font-semibold text-[var(--text-primary)] mb-0.5">
             {title}
           </p>
         )}
-        <div className="text-sm text-[var(--text-secondary)]">{children}</div>
+        <div className="text-xs leading-relaxed text-[var(--text-secondary)]">{children}</div>
       </div>
       {dismissible && (
         <button
@@ -62,10 +62,10 @@ const Alert = ({
             setDismissed(true);
             onDismiss?.();
           }}
-          className="p-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors shrink-0"
+          className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors shrink-0"
           aria-label="Dismiss alert"
         >
-          <X className="w-4 h-4" />
+          <IconX size={16} stroke={1.75} />
         </button>
       )}
     </div>

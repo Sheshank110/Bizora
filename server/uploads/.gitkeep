@@ -1,0 +1,3 @@
+# Upload directory — Phase 4+
+# Receipt files, avatars, and documents will be stored here.
+# In production, swap for S3-compatible object storage.

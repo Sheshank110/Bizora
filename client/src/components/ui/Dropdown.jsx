@@ -1,6 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const Dropdown = ({
   trigger,
@@ -42,27 +40,22 @@ const Dropdown = ({
         {trigger}
       </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            ref={dropdownRef}
-            initial={{ opacity: 0, y: -4, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -4, scale: 0.97 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className={`
-              absolute z-50 mt-2 min-w-[200px]
-              glass-heavy rounded-xl py-1.5
-              ${alignClasses[align] || alignClasses.right}
-              ${className}
-            `}
-          >
-            {typeof children === 'function'
-              ? children({ close: () => setIsOpen(false) })
-              : children}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div
+          ref={dropdownRef}
+          className={`
+            absolute z-50 mt-1.5 min-w-[190px]
+            bg-[#FFFFFF] dark:bg-[#181818]
+            rounded-lg py-1 shadow-xl border-none
+            ${alignClasses[align] || alignClasses.right}
+            ${className}
+          `}
+        >
+          {typeof children === 'function'
+            ? children({ close: () => setIsOpen(false) })
+            : children}
+        </div>
+      )}
     </div>
   );
 };
@@ -79,26 +72,26 @@ const DropdownItem = ({
     onClick={onClick}
     disabled={disabled}
     className={`
-      w-full flex items-center gap-3 px-4 py-2 text-sm text-left transition-colors
+      w-full flex items-center gap-2.5 px-3 py-2 text-xs text-left transition-colors
       disabled:opacity-50 disabled:cursor-not-allowed
       ${danger
-        ? 'text-rose-500 hover:bg-rose-500/10'
-        : 'text-[var(--text-secondary)] hover:bg-[var(--glass-bg)] hover:text-[var(--text-primary)]'
+        ? 'text-[var(--text-primary)] hover:bg-[var(--surface-secondary)] font-medium'
+        : 'text-[var(--text-secondary)] hover:bg-[#F7F7F7] dark:hover:bg-[#222222] hover:text-[var(--text-primary)]'
       }
       ${className}
     `}
   >
-    {Icon && <Icon className="w-4 h-4 shrink-0" />}
-    {children}
+    {!children && Icon && <Icon className="w-4 h-4 shrink-0 stroke-[1.75]" />}
+    <span>{children}</span>
   </button>
 );
 
 const DropdownSeparator = () => (
-  <div className="my-1.5 border-t border-[var(--glass-border)]" />
+  <div className="my-1 h-px bg-[#EFEFEF] dark:bg-[#222222]" />
 );
 
 const DropdownLabel = ({ children }) => (
-  <div className="px-4 py-1.5 text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
+  <div className="px-3 py-1.5 text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
     {children}
   </div>
 );

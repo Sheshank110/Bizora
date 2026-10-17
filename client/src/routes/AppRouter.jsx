@@ -3,6 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // Layouts
 import AppShell from '../components/layout/AppShell';
 import AdminLayout from '../components/layout/AdminLayout';
+import ClientLayout from '../components/layout/ClientLayout';
+
+// Route Guards
+import { RequireAuth, RequireGuest } from './guards/RouteGuards';
 
 // Public pages
 import LandingPage from '../pages/public/LandingPage';
@@ -12,15 +16,49 @@ import RegisterPage from '../pages/auth/RegisterPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
+import AcceptInvitePage from '../pages/auth/AcceptInvitePage';
 import OnboardingPage from '../pages/auth/OnboardingPage';
 
 // App pages
 import DashboardPage from '../pages/app/DashboardPage';
-import ComingSoonPage from '../pages/app/ComingSoonPage';
+import ProfilePage from '../pages/app/ProfilePage';
+import CustomersPage from '../pages/app/CustomersPage';
+import CustomerDetailPage from '../pages/app/CustomerDetailPage';
+import EmployeesPage from '../pages/app/EmployeesPage';
+import EmployeeDetailPage from '../pages/app/EmployeeDetailPage';
+import TeamPage from '../pages/app/TeamPage';
+import SettingsPage from '../pages/app/SettingsPage';
+
+// Phase 4 & Milestones 1-8 modules
+import ProjectsPage from '../pages/app/ProjectsPage';
+import ProjectDetailPage from '../pages/app/ProjectDetailPage';
+import TasksPage from '../pages/app/TasksPage';
+import ServicesPage from '../pages/app/ServicesPage';
+import InvoicesPage from '../pages/app/InvoicesPage';
+import InvoiceDetailPage from '../pages/app/InvoiceDetailPage';
+import PaymentsPage from '../pages/app/PaymentsPage';
+import ExpensesPage from '../pages/app/ExpensesPage';
+import InventoryPage from '../pages/app/InventoryPage';
+import InventoryDetailPage from '../pages/app/InventoryDetailPage';
+import ReportsPage from '../pages/app/ReportsPage';
+import NotificationsPage from '../pages/app/NotificationsPage';
+import FilesPage from '../pages/app/FilesPage';
+import ActivityPage from '../pages/app/ActivityPage';
+import BillingPage from '../pages/app/BillingPage';
 
 // Admin pages
 import AdminDashboardPage from '../pages/admin/AdminDashboardPage';
+import AdminBusinessesPage from '../pages/admin/AdminBusinessesPage';
+import AdminUsersPage from '../pages/admin/AdminUsersPage';
+import AdminSubscriptionsPage from '../pages/admin/AdminSubscriptionsPage';
+import AdminPlansPage from '../pages/admin/AdminPlansPage';
 import AdminComingSoonPage from '../pages/admin/AdminComingSoonPage';
+
+// Client Portal pages
+import ClientDashboardPage from '../pages/client/ClientDashboardPage';
+import ClientProjectsPage from '../pages/client/ClientProjectsPage';
+import ClientInvoicesPage from '../pages/client/ClientInvoicesPage';
+import ClientFilesPage from '../pages/client/ClientFilesPage';
 
 import { ROUTES } from '../constants';
 
@@ -30,48 +68,77 @@ const AppRouter = () => {
       {/* ─── Public Routes ──────────────────────────── */}
       <Route path={ROUTES.HOME} element={<LandingPage />} />
       <Route path={ROUTES.PRICING} element={<PricingPage />} />
-
-      {/* Auth routes */}
-      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-      <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
-      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
-      <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
       <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
-      <Route path={ROUTES.ONBOARDING} element={<OnboardingPage />} />
+      <Route path={ROUTES.ACCEPT_INVITE} element={<AcceptInvitePage />} />
 
-      {/* ─── App Routes ─────────────────────────────── */}
-      <Route path="/app" element={<AppShell />}>
-        <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
+      {/* ─── Guest Only Routes (redirect to /app if authenticated) ─ */}
+      <Route element={<RequireGuest />}>
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+        <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
+      </Route>
 
-        {/* Phase 2+ modules — clean placeholder */}
-        <Route path="customers"    element={<ComingSoonPage module="Customers" icon="Users" />} />
-        <Route path="employees"    element={<ComingSoonPage module="Employees" icon="UserCog" />} />
-        <Route path="projects"     element={<ComingSoonPage module="Projects" icon="FolderKanban" />} />
-        <Route path="tasks"        element={<ComingSoonPage module="Tasks" icon="CheckSquare" />} />
-        <Route path="services"     element={<ComingSoonPage module="Services" icon="Briefcase" />} />
-        <Route path="invoices"     element={<ComingSoonPage module="Invoices" icon="FileText" />} />
-        <Route path="payments"     element={<ComingSoonPage module="Payments" icon="CreditCard" />} />
-        <Route path="expenses"     element={<ComingSoonPage module="Expenses" icon="Receipt" />} />
-        <Route path="inventory"    element={<ComingSoonPage module="Inventory" icon="Package" />} />
-        <Route path="reports"      element={<ComingSoonPage module="Reports" icon="BarChart3" />} />
-        <Route path="notifications" element={<ComingSoonPage module="Notifications" icon="Bell" />} />
-        <Route path="files"        element={<ComingSoonPage module="Files" icon="FolderOpen" />} />
-        <Route path="activity"     element={<ComingSoonPage module="Activity" icon="Activity" />} />
-        <Route path="settings"     element={<ComingSoonPage module="Settings" icon="Settings" />} />
-        <Route path="billing"      element={<ComingSoonPage module="Billing" icon="Wallet" />} />
+      {/* ─── Onboarding Route (requires auth) ───────── */}
+      <Route element={<RequireAuth />}>
+        <Route path={ROUTES.ONBOARDING} element={<OnboardingPage />} />
+      </Route>
+
+      {/* ─── Protected App Routes ───────────────────── */}
+      <Route element={<RequireAuth />}>
+        <Route path="/app" element={<AppShell />}>
+          <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="customers" element={<CustomersPage />} />
+          <Route path="customers/:customerId" element={<CustomerDetailPage />} />
+          <Route path="employees" element={<EmployeesPage />} />
+          <Route path="employees/:employeeId" element={<EmployeeDetailPage />} />
+          <Route path="team" element={<EmployeesPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+
+          {/* Phase 4 & Milestone App modules */}
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects/:projectId" element={<ProjectDetailPage />} />
+          <Route path="tasks" element={<TasksPage />} />
+          <Route path="services" element={<ServicesPage />} />
+          <Route path="invoices" element={<InvoicesPage />} />
+          <Route path="invoices/:invoiceId" element={<InvoiceDetailPage />} />
+          <Route path="payments" element={<PaymentsPage />} />
+          <Route path="expenses" element={<ExpensesPage />} />
+          <Route path="inventory" element={<InventoryPage />} />
+          <Route path="inventory/:itemId" element={<InventoryDetailPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="files" element={<FilesPage />} />
+          <Route path="activity" element={<ActivityPage />} />
+          <Route path="billing" element={<BillingPage />} />
+        </Route>
       </Route>
 
       {/* ─── Admin Routes ───────────────────────────── */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to={ROUTES.ADMIN_DASHBOARD} replace />} />
-        <Route path="dashboard"     element={<AdminDashboardPage />} />
-        <Route path="businesses"    element={<AdminComingSoonPage module="Business Management" />} />
-        <Route path="users"         element={<AdminComingSoonPage module="User Management" />} />
-        <Route path="subscriptions" element={<AdminComingSoonPage module="Subscriptions" />} />
-        <Route path="plans"         element={<AdminComingSoonPage module="Plan Management" />} />
-        <Route path="audit-logs"    element={<AdminComingSoonPage module="Audit Logs" />} />
-        <Route path="settings"      element={<AdminComingSoonPage module="Platform Settings" />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to={ROUTES.ADMIN_DASHBOARD} replace />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="businesses" element={<AdminBusinessesPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
+          <Route path="plans" element={<AdminPlansPage />} />
+          <Route path="audit-logs" element={<ActivityPage />} />
+          <Route path="settings" element={<AdminComingSoonPage module="Platform Settings" />} />
+        </Route>
+      </Route>
+
+      {/* ─── Client Portal Routes ───────────────────── */}
+      <Route element={<RequireAuth />}>
+        <Route path="/client" element={<ClientLayout />}>
+          <Route index element={<Navigate to="/client/dashboard" replace />} />
+          <Route path="dashboard" element={<ClientDashboardPage />} />
+          <Route path="projects" element={<ClientProjectsPage />} />
+          <Route path="invoices" element={<ClientInvoicesPage />} />
+          <Route path="files" element={<ClientFilesPage />} />
+        </Route>
       </Route>
 
       {/* ─── Catch-all ──────────────────────────────── */}

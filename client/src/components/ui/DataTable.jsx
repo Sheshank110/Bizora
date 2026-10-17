@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, Search } from 'lucide-react';
+import { IconChevronUp, IconChevronDown, IconSearch } from '@tabler/icons-react';
 import EmptyState from './EmptyState';
 
 const DataTable = ({
   columns = [],
   data = [],
   searchable = false,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = 'Search records...',
   onRowClick,
-  emptyTitle = 'No data found',
+  emptyTitle = 'No records found',
   emptyDescription = 'No records match your criteria.',
   className = '',
 }) => {
@@ -51,35 +51,34 @@ const DataTable = ({
   }
 
   return (
-    <div className={`glass rounded-xl overflow-hidden ${className}`}>
-      {/* Search */}
+    <div className={`w-full overflow-hidden ${className}`}>
+      {/* Search Bar: Clean filled input without container borders */}
       {searchable && (
-        <div className="px-4 py-3 border-b border-[var(--glass-border)]">
+        <div className="pb-3">
           <div className="relative max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none stroke-[1.75]" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-lg bg-[var(--glass-bg-subtle)] border border-[var(--glass-border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-brand-500 transition-colors"
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-md bg-[var(--surface-secondary)] border-none outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[#2563EB] transition-colors"
             />
           </div>
         </div>
       )}
 
-      {/* Table */}
+      {/* Table: No container borders, clear typography */}
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[var(--glass-border)]">
+            <tr className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] select-none">
               {columns.map((col) => (
                 <th
                   key={col.accessor || col.header}
                   className={`
-                    px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider
-                    text-[var(--text-muted)]
-                    ${col.sortable !== false ? 'cursor-pointer hover:text-[var(--text-secondary)] select-none' : ''}
+                    py-2.5 px-3
+                    ${col.sortable !== false ? 'cursor-pointer hover:text-[var(--text-primary)]' : ''}
                     ${col.className || ''}
                   `}
                   onClick={() => col.sortable !== false && col.accessor && handleSort(col.accessor)}
@@ -87,27 +86,32 @@ const DataTable = ({
                   <div className="flex items-center gap-1.5">
                     {col.header}
                     {col.sortable !== false && sortCol === col.accessor && (
-                      sortDir === 'asc' ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
+                      sortDir === 'asc' ? (
+                        <IconChevronUp className="w-3.5 h-3.5 text-[#2563EB] stroke-[2]" />
+                      ) : (
+                        <IconChevronDown className="w-3.5 h-3.5 text-[#2563EB] stroke-[2]" />
+                      )
                     )}
                   </div>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--glass-border)]">
+          <tbody className="text-[var(--text-secondary)]">
             {filtered.map((row, rowIdx) => (
               <tr
-                key={row.id || rowIdx}
+                key={row.id || row._id || rowIdx}
                 onClick={() => onRowClick?.(row)}
                 className={`
-                  transition-colors
-                  ${onRowClick ? 'cursor-pointer hover:bg-[var(--glass-bg)]' : ''}
+                  transition-colors duration-100
+                  ${onRowClick ? 'cursor-pointer' : ''}
+                  hover:bg-[var(--surface-secondary)]
                 `}
               >
                 {columns.map((col) => (
                   <td
                     key={col.accessor || col.header}
-                    className={`px-4 py-3 text-sm text-[var(--text-secondary)] ${col.cellClassName || ''}`}
+                    className={`py-3 px-3 text-sm font-normal ${col.cellClassName || ''}`}
                   >
                     {col.render ? col.render(row) : row[col.accessor]}
                   </td>
@@ -118,7 +122,7 @@ const DataTable = ({
         </table>
       </div>
 
-      {/* Empty */}
+      {/* Empty State */}
       {filtered.length === 0 && (
         <EmptyState title={emptyTitle} description={emptyDescription} />
       )}

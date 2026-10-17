@@ -4,16 +4,16 @@ const Timeline = ({ items = [], className = '' }) => {
   return (
     <div className={`relative ${className}`}>
       {/* Vertical line */}
-      <div className="absolute left-[15px] top-2 bottom-2 w-px bg-[var(--border-default)]" />
+      <div className="absolute left-[7px] top-2 bottom-2 w-px bg-[var(--surface-secondary)]" />
 
       <div className="space-y-4">
         {items.map((item, index) => (
-          <div key={item.id || index} className="relative flex gap-4 pl-1">
+          <div key={item.id || index} className="relative flex gap-3 pl-0.5">
             {/* Dot */}
             <div className={`
-              relative z-10 w-[10px] h-[10px] mt-1.5 rounded-full shrink-0
-              ring-4 ring-[var(--surface-primary)]
-              ${item.color || 'bg-brand-500'}
+              relative z-10 w-3 h-3 mt-1 rounded-full shrink-0
+              bg-[var(--surface-primary)] border-2
+              ${item.color || 'border-[#2563EB]'}
             `} />
 
             {/* Content */}
@@ -29,7 +29,7 @@ const Timeline = ({ items = [], className = '' }) => {
                 )}
               </div>
               {item.description && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
                   {item.description}
                 </p>
               )}

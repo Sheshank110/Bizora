@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 const Input = forwardRef(
   (
@@ -28,7 +28,7 @@ const Input = forwardRef(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-sm font-medium text-[var(--text-secondary)]"
+            className="text-xs font-medium text-[var(--text-secondary)]"
           >
             {label}
             {required && <span className="text-rose-500 ml-0.5">*</span>}
@@ -36,8 +36,8 @@ const Input = forwardRef(
         )}
         <div className="relative">
           {LeftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
-              <LeftIcon className="w-4 h-4" />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none">
+              <LeftIcon className="w-4 h-4 stroke-[1.75]" />
             </div>
           )}
           <input
@@ -45,15 +45,15 @@ const Input = forwardRef(
             id={inputId}
             type={inputType}
             className={`
-              w-full px-4 py-2.5 rounded-lg text-sm
-              bg-[var(--glass-bg)] backdrop-blur-md
-              border transition-all duration-200
+              w-full px-3 py-2 rounded-md text-sm
+              bg-[var(--surface-secondary)]
+              border-none outline-none
               text-[var(--text-primary)] placeholder:text-[var(--text-muted)]
-              focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500
+              focus:ring-2 focus:ring-[#2563EB]
               disabled:opacity-50 disabled:cursor-not-allowed
-              ${error ? 'border-rose-500/50 focus:ring-rose-500/30 focus:border-rose-500' : 'border-[var(--glass-border)] hover:border-[var(--border-default)]'}
-              ${LeftIcon ? 'pl-10' : ''}
-              ${isPassword || RightIcon ? 'pr-10' : ''}
+              ${error ? 'ring-2 ring-rose-500/60' : ''}
+              ${LeftIcon ? 'pl-9' : ''}
+              ${isPassword || RightIcon ? 'pr-9' : ''}
               ${className}
             `}
             {...props}
@@ -62,16 +62,16 @@ const Input = forwardRef(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               tabIndex={-1}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword ? <IconEyeOff className="w-4 h-4 stroke-[1.75]" /> : <IconEye className="w-4 h-4 stroke-[1.75]" />}
             </button>
           )}
           {RightIcon && !isPassword && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
-              <RightIcon className="w-4 h-4" />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none">
+              <RightIcon className="w-4 h-4 stroke-[1.75]" />
             </div>
           )}
         </div>

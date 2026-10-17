@@ -46,3 +46,6 @@ export const useToast = () => {
     info: (title, message) => addToast({ type: 'info', title, message }),
   };
 };
+
+export default useToastStore;
+

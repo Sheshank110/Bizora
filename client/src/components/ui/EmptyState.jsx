@@ -1,37 +1,30 @@
-import { motion } from 'framer-motion';
-import { Inbox } from 'lucide-react';
+import React from 'react';
+import { IconInbox } from '@tabler/icons-react';
 import Button from './Button';
 
 const EmptyState = ({
-  icon: Icon = Inbox,
-  title = 'No data yet',
-  description = 'This section is empty. Data will appear here once available.',
+  icon: Icon = IconInbox,
+  title = 'No records found',
+  description = 'There is currently no data to display in this view.',
   action,
-  actionLabel = 'Get started',
+  actionLabel = 'Create new',
   className = '',
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className={`flex flex-col items-center justify-center py-16 px-6 text-center ${className}`}
-    >
-      <div className="w-16 h-16 rounded-2xl bg-[var(--glass-bg)] border border-[var(--glass-border)] flex items-center justify-center mb-5">
-        <Icon className="w-8 h-8 text-[var(--text-muted)]" />
-      </div>
-      <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1.5">
+    <div className={`flex flex-col items-center justify-center py-12 px-4 text-center ${className}`}>
+      <Icon className="w-8 h-8 text-[var(--text-muted)] stroke-[1.5] mb-3" />
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1">
         {title}
       </h3>
-      <p className="text-sm text-[var(--text-muted)] max-w-sm mb-6">
+      <p className="text-xs text-[var(--text-muted)] max-w-sm mb-4">
         {description}
       </p>
       {action && (
-        <Button variant="primary" size="sm" onClick={action}>
+        <Button variant="secondary" size="sm" onClick={action}>
           {actionLabel}
         </Button>
       )}
-    </motion.div>
+    </div>
   );
 };
 

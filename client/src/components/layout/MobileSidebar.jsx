@@ -1,35 +1,56 @@
 import { NavLink } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LayoutDashboard, Users, UserCog, FolderKanban, CheckSquare,
-  Briefcase, FileText, CreditCard, Receipt, Package, BarChart3,
-  Bell, FolderOpen, Activity, Settings, Wallet, Zap, X,
-} from 'lucide-react';
+  IconDashboard,
+  IconUsers,
+  IconUserCheck,
+  IconFolder,
+  IconCheckbox,
+  IconBriefcase,
+  IconFileText,
+  IconCreditCard,
+  IconReceipt,
+  IconPackage,
+  IconChartBar,
+  IconActivity,
+  IconSettings,
+  IconX,
+} from '@tabler/icons-react';
 import { useUIStore } from '../../store/uiStore';
-import { NAV_ITEMS, NAV_SECONDARY, NAV_BOTTOM, APP_NAME } from '../../constants';
+import { NAV_SECTIONS } from '../../constants';
+import Logo from '../ui/Logo';
 
 const iconMap = {
-  LayoutDashboard, Users, UserCog, FolderKanban, CheckSquare,
-  Briefcase, FileText, CreditCard, Receipt, Package, BarChart3,
-  Bell, FolderOpen, Activity, Settings, Wallet, Zap,
+  LayoutDashboard: IconDashboard,
+  Users: IconUsers,
+  UserCog: IconUserCheck,
+  FolderKanban: IconFolder,
+  CheckSquare: IconCheckbox,
+  Briefcase: IconBriefcase,
+  FileText: IconFileText,
+  CreditCard: IconCreditCard,
+  Receipt: IconReceipt,
+  Package: IconPackage,
+  BarChart3: IconChartBar,
+  Activity: IconActivity,
+  Settings: IconSettings,
 };
 
 const MobileNavLink = ({ item, onClose }) => {
-  const Icon = iconMap[item.icon] || LayoutDashboard;
+  const Icon = iconMap[item.icon] || IconDashboard;
 
   return (
     <NavLink
       to={item.path}
       onClick={onClose}
       className={({ isActive }) => `
-        flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors
+        flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors
         ${isActive
-          ? 'text-brand-400 bg-[var(--sidebar-item-active)]'
-          : 'text-[var(--text-secondary)] hover:bg-[var(--sidebar-item-hover)]'
+          ? 'bg-[#E5E5E5] dark:bg-[#1C1C1E] text-[var(--text-primary)] font-semibold'
+          : 'text-[var(--text-secondary)] hover:bg-[#EAEAEA] dark:hover:bg-[#181818] hover:text-[var(--text-primary)]'
         }
       `}
     >
-      <Icon className="w-[18px] h-[18px] shrink-0" />
+      <Icon className="w-4 h-4 shrink-0 stroke-[1.75]" />
       {item.label}
     </NavLink>
   );
@@ -39,76 +60,53 @@ const MobileSidebar = () => {
   const { sidebarMobileOpen, setSidebarMobileOpen } = useUIStore();
   const close = () => setSidebarMobileOpen(false);
 
+  if (!sidebarMobileOpen) return null;
+
   return (
-    <AnimatePresence>
-      {sidebarMobileOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+        onClick={close}
+      />
+
+      {/* Drawer */}
+      <div
+        className="
+          fixed left-0 top-0 bottom-0 z-50 w-64 lg:hidden
+          bg-[var(--sidebar-bg)]
+          flex flex-col overflow-hidden shadow-2xl border-none
+        "
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between h-14 px-4 shrink-0">
+          <Logo variant="horizontal" size="sm" />
+          <button
             onClick={close}
-          />
-
-          {/* Drawer */}
-          <motion.div
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="
-              fixed left-0 top-0 bottom-0 z-50 w-72 lg:hidden
-              bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)]
-              flex flex-col overflow-hidden
-            "
+            className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-[var(--surface-secondary)] transition-colors"
+            aria-label="Close menu"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--sidebar-border)] shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-base font-bold text-[var(--text-primary)] tracking-tight">
-                  {APP_NAME}
-                </span>
-              </div>
-              <button
-                onClick={close}
-                className="p-1.5 rounded-lg text-[var(--text-muted)] hover:bg-[var(--glass-bg)] transition-colors"
-                aria-label="Close menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            <IconX className="w-5 h-5 stroke-[1.75]" />
+          </button>
+        </div>
 
-            {/* Nav */}
-            <nav className="flex-1 overflow-y-auto py-2">
-              <p className="px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-                Main
-              </p>
-              {NAV_ITEMS.map((item) => (
-                <MobileNavLink key={item.path} item={item} onClose={close} />
-              ))}
-              <p className="px-4 pt-4 pb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-                Tools
-              </p>
-              {NAV_SECONDARY.map((item) => (
-                <MobileNavLink key={item.path} item={item} onClose={close} />
-              ))}
-            </nav>
-
-            {/* Bottom */}
-            <div className="border-t border-[var(--sidebar-border)] py-2">
-              {NAV_BOTTOM.map((item) => (
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto py-2 px-2 space-y-3">
+          {NAV_SECTIONS.map((section, idx) => (
+            <div key={section.title || idx} className="space-y-0.5">
+              {section.title && (
+                <p className="px-3 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                  {section.title}
+                </p>
+              )}
+              {section.items.map((item) => (
                 <MobileNavLink key={item.path} item={item} onClose={close} />
               ))}
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          ))}
+        </nav>
+      </div>
+    </>
   );
 };
 
