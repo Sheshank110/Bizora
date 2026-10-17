@@ -34,6 +34,9 @@ const connectDB = async () => {
       return null;
     }
     logger.error(`MongoDB connection failed: ${error.message}`);
+    if (process.env.VERCEL) {
+      return null;
+    }
     process.exit(1);
   }
 };
