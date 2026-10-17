@@ -61,7 +61,8 @@ if (process.env.VERCEL) {
 }
 
 // Start standalone server when executed directly (local development)
-if (!process.env.VERCEL) {
+const isMainScript = process.argv[1] && (process.argv[1].endsWith('server.js') || process.argv[1].endsWith('server'));
+if (!process.env.VERCEL && isMainScript) {
   startServer().catch((err) => {
     logger.error('Failed to start server:', err.message);
     process.exit(1);
