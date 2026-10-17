@@ -14,7 +14,6 @@ import {
 import { Button, Input, Select, Modal, Spinner } from '../../components/ui';
 import fileService from '../../services/fileService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_FILES } from '../../data/mockData';
 
 const formatBytes = (bytes) => {
   if (!bytes) return '0 B';
@@ -76,7 +75,7 @@ const FilesPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['files'] }),
   });
 
-  const files = (filesRes?.data && filesRes.data.length > 0) ? filesRes.data : MOCK_FILES;
+  const files = filesRes?.data || [];
   const totalStorage = files.reduce((acc, f) => acc + (f.size || 0), 0);
 
   const handleUploadSubmit = (e) => {

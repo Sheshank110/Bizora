@@ -4,7 +4,6 @@ import { IconActivity, IconSearch } from '@tabler/icons-react';
 import { Input, Select, Badge, Spinner } from '../../components/ui';
 import auditLogService from '../../services/auditLogService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_ACTIVITY } from '../../data/mockData';
 
 const actionVariants = {
   USER_LOGGED_IN: 'default',
@@ -36,7 +35,7 @@ const ActivityPage = () => {
     }),
   });
 
-  const logs = (logsRes?.data && logsRes.data.length > 0) ? logsRes.data : MOCK_ACTIVITY;
+  const logs = logsRes?.data || [];
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">

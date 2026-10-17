@@ -8,7 +8,6 @@ import {
 } from '@tabler/icons-react';
 import { Button, Badge, Spinner, Modal, Input, Select, Alert } from '../../components/ui';
 import inventoryService from '../../services/inventoryService';
-import { MOCK_INVENTORY } from '../../data/mockData';
 
 const InventoryDetailPage = () => {
   const { itemId } = useParams();
@@ -41,26 +40,8 @@ const InventoryDetailPage = () => {
     },
   });
 
-  const fallbackItem = MOCK_INVENTORY.find((i) => i._id === itemId || i.id === itemId) || MOCK_INVENTORY[0];
-  const item = itemRes?.data || fallbackItem;
-  const transactions = txRes?.data || [
-    {
-      _id: 'tx_demo_1',
-      type: 'PURCHASE',
-      quantity: 15,
-      balanceAfter: 28,
-      notes: 'Supplier replenishment batch #8912',
-      createdAt: '2026-10-01T14:20:00Z',
-    },
-    {
-      _id: 'tx_demo_2',
-      type: 'SALE',
-      quantity: -4,
-      balanceAfter: 24,
-      notes: 'Allocated to Client Project E-Commerce Architecture',
-      createdAt: '2026-10-02T09:15:00Z',
-    },
-  ];
+  const item = itemRes?.data;
+  const transactions = txRes?.data || [];
 
   if (isLoadingItem && !item) {
     return (

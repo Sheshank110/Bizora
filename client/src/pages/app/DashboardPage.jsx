@@ -8,6 +8,7 @@ import {
   IconAlertCircle,
   IconCheck,
   IconClock,
+  IconChartLine,
 } from '@tabler/icons-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
@@ -17,15 +18,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Badge } from '../../components/ui';
 import { ROUTES } from '../../constants';
 import dashboardService from '../../services/dashboardService';
-import projectService from '../../services/projectService';
-import invoiceService from '../../services/invoiceService';
 import { useAuthStore } from '../../store/authStore';
-import {
-  MOCK_DASHBOARD_STATS,
-  MOCK_REVENUE_CHART,
-  MOCK_TASKS,
-  MOCK_ACTIVITY,
-} from '../../data/mockData';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload?.length) {
@@ -56,14 +49,16 @@ const DashboardPage = () => {
 
   const realStats = statsData?.data;
   const stats = {
-    revenue: realStats?.revenue || MOCK_DASHBOARD_STATS.revenue,
-    projects: realStats?.projects || MOCK_DASHBOARD_STATS.projects,
-    tasks: realStats?.tasks || MOCK_DASHBOARD_STATS.tasks,
-    customers: realStats?.customers || MOCK_DASHBOARD_STATS.customers,
+    revenue: realStats?.revenue || { monthly: 0, total: 0, change: 0 },
+    projects: realStats?.projects || { active: 0, total: 0 },
+    tasks: realStats?.tasks || { open: 0, total: 0, completionRate: 0 },
+    customers: realStats?.customers || { total: 0, active: 0, newThisMonth: 0 },
   };
 
-  const tasksAttention = MOCK_TASKS.filter((t) => t.status !== 'DONE').slice(0, 4);
-  const recentActivities = MOCK_ACTIVITY.slice(0, 5);
+  const tasksAttention = realStats?.tasksAttention || [];
+  const recentActivities = realStats?.recentActivities || [];
+  const revenueChartData = realStats?.revenueChart || [];
+  const hasRevenueData = revenueChartData.some((d) => (d.revenue || 0) > 0);
 
   const firstName = user?.firstName || 'there';
 
@@ -98,50 +93,56 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* 4 Core Metrics: Typography & Whitespace, NO container borders */}
+      {/* 4 Core Metrics: Real Data / Zero-State */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-lg bg-[var(--surface-secondary)]">
           <span className="text-xs text-[var(--text-muted)] block">Revenue</span>
           <span className="text-2xl font-bold text-[var(--text-primary)] mt-1 block tracking-tight">
-            ${(stats.revenue?.monthly || 48290).toLocaleString()}
+            ${(stats.revenue?.monthly ?? 0).toLocaleString()}
           </span>
           <span className="text-xs text-[var(--text-muted)] mt-1 inline-flex items-center gap-0.5">
-            <IconArrowUpRight className="w-3.5 h-3.5 stroke-[2]" /> +14.2%
+            {stats.revenue?.change ? (
+              <>
+                <IconArrowUpRight className="w-3.5 h-3.5 stroke-[2]" /> +{stats.revenue.change}%
+              </>
+            ) : (
+              'This month'
+            )}
           </span>
         </div>
 
         <div className="p-4 rounded-lg bg-[var(--surface-secondary)]">
           <span className="text-xs text-[var(--text-muted)] block">Active Projects</span>
           <span className="text-2xl font-bold text-[var(--text-primary)] mt-1 block tracking-tight">
-            {stats.projects?.active || 8}
+            {stats.projects?.active ?? 0}
           </span>
           <span className="text-xs text-[var(--text-muted)] mt-1 inline-block">
-            {stats.projects?.total || 16} total
+            {stats.projects?.total ?? 0} total
           </span>
         </div>
 
         <div className="p-4 rounded-lg bg-[var(--surface-secondary)]">
           <span className="text-xs text-[var(--text-muted)] block">Open Tasks</span>
           <span className="text-2xl font-bold text-[var(--text-primary)] mt-1 block tracking-tight">
-            {stats.tasks?.open || 18}
+            {stats.tasks?.open ?? 0}
           </span>
           <span className="text-xs text-[var(--text-muted)] mt-1 inline-block">
-            {stats.tasks?.completionRate || 86}% throughput
+            {stats.tasks?.completionRate ?? 0}% throughput
           </span>
         </div>
 
         <div className="p-4 rounded-lg bg-[var(--surface-secondary)]">
           <span className="text-xs text-[var(--text-muted)] block">Customers</span>
           <span className="text-2xl font-bold text-[var(--text-primary)] mt-1 block tracking-tight">
-            {stats.customers?.total || 342}
+            {stats.customers?.total ?? 0}
           </span>
           <span className="text-xs text-[var(--text-muted)] mt-1 inline-block">
-            +{stats.customers?.newThisMonth || 6} new
+            +{stats.customers?.newThisMonth ?? 0} new
           </span>
         </div>
       </div>
 
-      {/* Revenue Overview Chart: Flat surface with NO borders */}
+      {/* Revenue Overview Chart: Real Data or Clean Zero State */}
       <div className="p-5 rounded-lg bg-[var(--surface-secondary)]">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -155,23 +156,33 @@ const DashboardPage = () => {
           <span className="text-xs font-mono text-[var(--text-muted)]">USD ($)</span>
         </div>
 
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={MOCK_REVENUE_CHART} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="monoRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(128,128,128,0.15)" />
-              <XAxis dataKey="month" stroke="rgba(128,128,128,0.6)" fontSize={11} tickLine={false} axisLine={false} />
-              <YAxis stroke="rgba(128,128,128,0.6)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
-              <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#2563EB" strokeWidth={2} fill="url(#monoRevenue)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        {hasRevenueData ? (
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="monoRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(128,128,128,0.15)" />
+                <XAxis dataKey="month" stroke="rgba(128,128,128,0.6)" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="rgba(128,128,128,0.6)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#2563EB" strokeWidth={2} fill="url(#monoRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="h-48 w-full flex flex-col items-center justify-center text-center p-6 bg-[var(--surface-primary)] rounded-md">
+            <IconChartLine className="w-8 h-8 text-[var(--text-muted)] stroke-[1.5] mb-2" />
+            <p className="text-xs font-semibold text-[var(--text-primary)]">No revenue recorded yet</p>
+            <p className="text-[11px] text-[var(--text-muted)] max-w-sm mt-0.5">
+              Monthly cashflow and revenue trajectory will be charted here automatically as invoices are paid.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Two-Column Layout: Tasks requiring attention & Recent Activity */}
@@ -187,33 +198,50 @@ const DashboardPage = () => {
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {tasksAttention.map((task) => (
-              <div
-                key={task._id || task.id}
-                className="p-3 rounded bg-[var(--surface-primary)] flex items-start justify-between gap-3 text-xs"
-              >
-                <div>
-                  <span className="font-medium text-[var(--text-primary)] block">
-                    {task.title}
-                  </span>
-                  <span className="text-[11px] text-[var(--text-muted)] mt-0.5 block">
-                    Due {task.dueDate || 'Soon'} &bull; {task.priority} priority
-                  </span>
-                </div>
-                <Badge
-                  variant={
-                    task.status === 'IN_PROGRESS' ? 'info' :
-                    task.status === 'REVIEW' ? 'warning' :
-                    task.status === 'DONE' ? 'success' : 'neutral'
-                  }
-                  size="xs"
+          {tasksAttention.length > 0 ? (
+            <div className="space-y-3">
+              {tasksAttention.map((task) => (
+                <div
+                  key={task._id || task.id}
+                  className="p-3 rounded bg-[var(--surface-primary)] flex items-start justify-between gap-3 text-xs"
                 >
-                  {task.status.replace('_', ' ')}
-                </Badge>
-              </div>
-            ))}
-          </div>
+                  <div>
+                    <span className="font-medium text-[var(--text-primary)] block">
+                      {task.title}
+                    </span>
+                    <span className="text-[11px] text-[var(--text-muted)] mt-0.5 block">
+                      Due {task.dueDate || 'Soon'} &bull; {task.priority} priority
+                    </span>
+                  </div>
+                  <Badge
+                    variant={
+                      task.status === 'IN_PROGRESS' ? 'info' :
+                      task.status === 'REVIEW' ? 'warning' :
+                      task.status === 'DONE' ? 'success' : 'neutral'
+                    }
+                    size="xs"
+                  >
+                    {task.status.replace('_', ' ')}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center flex flex-col items-center justify-center bg-[var(--surface-primary)] rounded-md">
+              <IconCheck className="w-6 h-6 text-[var(--text-muted)] stroke-[1.5] mb-2" />
+              <p className="text-xs font-semibold text-[var(--text-primary)]">No open tasks</p>
+              <p className="text-[11px] text-[var(--text-muted)] mt-0.5 mb-3">
+                You&apos;re all caught up! Create a project or task to track work.
+              </p>
+              <Button
+                variant="secondary"
+                size="xs"
+                onClick={() => navigate(ROUTES.TASKS, { state: { openNew: true } })}
+              >
+                Create Task
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Recent Activity */}
@@ -227,26 +255,36 @@ const DashboardPage = () => {
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {recentActivities.map((act) => (
-              <div
-                key={act._id || act.id}
-                className="p-3 rounded bg-[var(--surface-primary)] flex items-center justify-between gap-3 text-xs"
-              >
-                <div className="min-w-0">
-                  <span className="font-medium text-[var(--text-primary)] block truncate">
-                    {act.action || act.description || act.title}
-                  </span>
-                  <span className="text-[11px] text-[var(--text-muted)] block truncate">
-                    {act.userName || 'System user'} &bull; {act.entityType || 'Workspace'}
+          {recentActivities.length > 0 ? (
+            <div className="space-y-3">
+              {recentActivities.map((act) => (
+                <div
+                  key={act._id || act.id}
+                  className="p-3 rounded bg-[var(--surface-primary)] flex items-center justify-between gap-3 text-xs"
+                >
+                  <div className="min-w-0">
+                    <span className="font-medium text-[var(--text-primary)] block truncate">
+                      {act.action || act.description || act.title}
+                    </span>
+                    <span className="text-[11px] text-[var(--text-muted)] block truncate">
+                      {act.userName || 'System user'} &bull; {act.entityType || 'Workspace'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-[var(--text-muted)] shrink-0 font-mono">
+                    {act.timeAgo || 'Recent'}
                   </span>
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] shrink-0 font-mono">
-                  {act.timeAgo || 'Recent'}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center flex flex-col items-center justify-center bg-[var(--surface-primary)] rounded-md">
+              <IconClock className="w-6 h-6 text-[var(--text-muted)] stroke-[1.5] mb-2" />
+              <p className="text-xs font-semibold text-[var(--text-primary)]">No recent activity</p>
+              <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                Actions and events across your workspace will appear here.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -254,3 +292,4 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+

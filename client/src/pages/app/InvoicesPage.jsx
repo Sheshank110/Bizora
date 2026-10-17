@@ -9,11 +9,10 @@ import {
   IconTrash,
   IconCheck,
 } from '@tabler/icons-react';
-import { Button, Input, Modal, Spinner, Badge } from '../../components/ui';
+import { Button, Input, Modal, Spinner, Badge, EmptyState } from '../../components/ui';
 import invoiceService from '../../services/invoiceService';
 import customerService from '../../services/customerService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_INVOICES, MOCK_CUSTOMERS } from '../../data/mockData';
 
 const statusVariants = {
   PAID: 'success',
@@ -74,8 +73,8 @@ const InvoicesPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['invoices'] }),
   });
 
-  const invoices = (invoicesRes?.data && invoicesRes.data.length > 0) ? invoicesRes.data : MOCK_INVOICES;
-  const customers = (customersRes?.data && customersRes.data.length > 0) ? customersRes.data : MOCK_CUSTOMERS;
+  const invoices = invoicesRes?.data || [];
+  const customers = customersRes?.data || [];
 
   // Summary statistics
   const totalInvoiced = invoices.reduce((acc, inv) => acc + (inv.total || 0), 0);
@@ -209,6 +208,14 @@ const InvoicesPage = () => {
           <Spinner size="md" />
           <p className="text-xs text-[var(--text-muted)]">Loading ledger...</p>
         </div>
+      ) : invoices.length === 0 ? (
+        <EmptyState
+          title="No invoices created yet"
+          description="Create your first client invoice to bill for deliverables and track payments."
+          action={() => setIsModalOpen(true)}
+          actionLabel="Create Invoice"
+          className="bg-[var(--surface-secondary)] rounded-lg py-16"
+        />
       ) : (
         <div className="p-2 rounded-lg bg-[var(--surface-secondary)]">
           <div className="overflow-x-auto">

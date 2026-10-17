@@ -10,7 +10,6 @@ import paymentService from '../../services/paymentService';
 import invoiceService from '../../services/invoiceService';
 import customerService from '../../services/customerService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_PAYMENTS, MOCK_INVOICES, MOCK_CUSTOMERS } from '../../data/mockData';
 
 const statusVariants = {
   SUCCEEDED: 'success',
@@ -64,9 +63,9 @@ const PaymentsPage = () => {
     },
   });
 
-  const payments = (paymentsRes?.data && paymentsRes.data.length > 0) ? paymentsRes.data : MOCK_PAYMENTS;
-  const invoices = (invoicesRes?.data && invoicesRes.data.length > 0) ? invoicesRes.data : MOCK_INVOICES;
-  const customers = (customersRes?.data && customersRes.data.length > 0) ? customersRes.data : MOCK_CUSTOMERS;
+  const payments = paymentsRes?.data || [];
+  const invoices = invoicesRes?.data || [];
+  const customers = customersRes?.data || [];
 
   const totalProcessed = payments
     .filter((p) => p.status === 'SUCCEEDED')

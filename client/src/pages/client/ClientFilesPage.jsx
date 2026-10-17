@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { IconFolder, IconFileText, IconDownload } from '@tabler/icons-react';
 import { Spinner } from '../../components/ui';
 import clientPortalService from '../../services/clientPortalService';
-import { MOCK_FILES } from '../../data/mockData';
 
 const ClientFilesPage = () => {
   const { data: filesRes, isLoading } = useQuery({
@@ -10,7 +9,7 @@ const ClientFilesPage = () => {
     queryFn: () => clientPortalService.getFiles(),
   });
 
-  const files = (filesRes?.data && filesRes.data.length > 0) ? filesRes.data : MOCK_FILES.slice(0, 2);
+  const files = filesRes?.data || [];
 
   if (isLoading) {
     return (

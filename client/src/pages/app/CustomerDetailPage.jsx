@@ -23,8 +23,7 @@ import {
   useCustomerMutations,
 } from '../../hooks/useCustomers';
 import useBusiness from '../../hooks/useBusiness';
-import { MOCK_CUSTOMERS } from '../../data/mockData';
-
+ 
 const CustomerDetailPage = () => {
   const { customerId } = useParams();
   const navigate = useNavigate();
@@ -35,8 +34,7 @@ const CustomerDetailPage = () => {
   const [isAddingTag, setIsAddingTag] = useState(false);
 
   const { data: customerData, isLoading } = useCustomerDetails(customerId);
-  const fallbackCustomer = MOCK_CUSTOMERS.find((c) => c._id === customerId || c.id === customerId) || MOCK_CUSTOMERS[0];
-  const customer = customerData || fallbackCustomer;
+  const customer = customerData?.data || customerData;
 
   const { data: notes = [], isLoading: isLoadingNotes } = useCustomerNotes(customerId);
   const { data: activities = [], isLoading: isLoadingActivities } = useCustomerActivity(customerId);

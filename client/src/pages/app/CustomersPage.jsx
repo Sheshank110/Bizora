@@ -6,12 +6,11 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@tabler/icons-react';
-import { Button, Spinner } from '../../components/ui';
+import { Button, Spinner, EmptyState } from '../../components/ui';
 import CustomerTable from '../../components/customers/CustomerTable';
 import CustomerFormModal from '../../components/customers/CustomerFormModal';
 import { useCustomersList, useCustomerMutations } from '../../hooks/useCustomers';
 import useBusiness from '../../hooks/useBusiness';
-import { MOCK_CUSTOMERS } from '../../data/mockData';
 
 const CustomersPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -62,7 +61,7 @@ const CustomersPage = () => {
   );
 
   const { data, isLoading } = useCustomersList(queryParams);
-  const customers = (data?.data && data.data.length > 0) ? data.data : MOCK_CUSTOMERS;
+  const customers = data?.data || [];
   const pagination = data?.pagination || { page: 1, limit: 20, total: customers.length, totalPages: 1 };
 
   const canManage = activeRole === 'owner' || activeRole === 'manager' || activeRole === 'employee';
@@ -169,6 +168,14 @@ const CustomersPage = () => {
           <Spinner size="md" />
           <p className="text-xs text-[var(--text-muted)]">Loading customers...</p>
         </div>
+      ) : customers.length === 0 ? (
+        <EmptyState
+          title="No customers yet"
+          description="Add your first customer to manage contacts, leads, and invoices."
+          action={canManage ? () => { setEditingCustomer(null); setIsModalOpen(true); } : undefined}
+          actionLabel="Add Customer"
+          className="bg-[var(--surface-secondary)] rounded-lg py-16"
+        />
       ) : (
         <div className="bg-[var(--surface-secondary)] rounded-lg p-2">
           <CustomerTable

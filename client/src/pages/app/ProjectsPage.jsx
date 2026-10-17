@@ -8,11 +8,10 @@ import {
   IconArrowRight,
   IconCheck,
 } from '@tabler/icons-react';
-import { Button, Input, Modal, Badge, Spinner } from '../../components/ui';
+import { Button, Input, Modal, Badge, Spinner, EmptyState } from '../../components/ui';
 import projectService from '../../services/projectService';
 import customerService from '../../services/customerService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_PROJECTS } from '../../data/mockData';
 
 const ProjectsPage = () => {
   const { currentBusiness } = useAuthStore();
@@ -52,7 +51,7 @@ const ProjectsPage = () => {
     },
   });
 
-  const projects = (projectsData?.data && projectsData.data.length > 0) ? projectsData.data : MOCK_PROJECTS;
+  const projects = projectsData?.data || [];
   const customers = customersData?.data || [];
 
   const handleCreate = (e) => {
@@ -116,6 +115,14 @@ const ProjectsPage = () => {
           <Spinner size="md" />
           <p className="text-xs text-[var(--text-muted)]">Loading projects...</p>
         </div>
+      ) : projects.length === 0 ? (
+        <EmptyState
+          title="No projects yet"
+          description="Create your first client project to track deliverables, milestones, and budgets."
+          action={() => setIsModalOpen(true)}
+          actionLabel="Create Project"
+          className="bg-[var(--surface-secondary)] rounded-lg py-16"
+        />
       ) : (
         <div className="p-2 rounded-lg bg-[var(--surface-secondary)]">
           <div className="overflow-x-auto">

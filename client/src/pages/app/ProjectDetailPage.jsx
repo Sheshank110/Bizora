@@ -12,7 +12,6 @@ import { Button, Badge, Modal, Input, Spinner, Alert } from '../../components/ui
 import projectService from '../../services/projectService';
 import taskService from '../../services/taskService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_PROJECTS, MOCK_TASKS } from '../../data/mockData';
 
 const ProjectDetailPage = () => {
   const { projectId } = useParams();
@@ -57,9 +56,8 @@ const ProjectDetailPage = () => {
     },
   });
 
-  const fallbackProject = MOCK_PROJECTS.find((p) => p._id === projectId || p.id === projectId) || MOCK_PROJECTS[0];
-  const project = projectRes?.data || fallbackProject;
-  const tasks = (tasksRes?.data && tasksRes.data.length > 0) ? tasksRes.data : MOCK_TASKS.slice(0, 4);
+  const project = projectRes?.data;
+  const tasks = tasksRes?.data || [];
 
   if (isLoadingProject && !project) {
     return (
@@ -196,27 +194,37 @@ const ProjectDetailPage = () => {
               </Button>
             </div>
 
-            <div className="space-y-2">
-              {tasks.map((task) => (
-                <div
-                  key={task._id || task.id}
-                  className="p-3 rounded bg-[var(--surface-primary)] flex items-center justify-between gap-3 text-xs"
-                >
-                  <div className="min-w-0">
-                    <span className={`font-medium block truncate ${task.status === 'DONE' ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-primary)]'}`}>
-                      {task.title}
-                    </span>
-                    <span className="text-[11px] text-[var(--text-muted)] block mt-0.5">
-                      {task.assignedToName || 'Unassigned'} &bull; Due {task.dueDate || 'Soon'}
-                    </span>
-                  </div>
+            {tasks.length === 0 ? (
+              <div className="p-8 text-center bg-[var(--surface-primary)] rounded-lg">
+                <IconCheck className="w-6 h-6 text-[var(--text-muted)] stroke-[1.5] mx-auto mb-2" />
+                <p className="text-xs font-semibold text-[var(--text-primary)]">No tasks created yet</p>
+                <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                  Break down this project into trackable milestones and tasks.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {tasks.map((task) => (
+                  <div
+                    key={task._id || task.id}
+                    className="p-3 rounded bg-[var(--surface-primary)] flex items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="min-w-0">
+                      <span className={`font-medium block truncate ${task.status === 'DONE' ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-primary)]'}`}>
+                        {task.title}
+                      </span>
+                      <span className="text-[11px] text-[var(--text-muted)] block mt-0.5">
+                        {task.assignedToName || 'Unassigned'} &bull; Due {task.dueDate || 'Soon'}
+                      </span>
+                    </div>
 
-                  <Badge variant={task.status === 'DONE' ? 'success' : 'default'} size="xs" className="shrink-0">
-                    {task.status.replace('_', ' ')}
-                  </Badge>
-                </div>
-              ))}
-            </div>
+                    <Badge variant={task.status === 'DONE' ? 'success' : 'default'} size="xs" className="shrink-0">
+                      {task.status.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

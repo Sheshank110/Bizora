@@ -10,7 +10,6 @@ import {
 import { Button, Badge, Spinner, Alert } from '../../components/ui';
 import invoiceService from '../../services/invoiceService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_INVOICES } from '../../data/mockData';
 
 const statusVariants = {
   DRAFT: 'default',
@@ -47,8 +46,7 @@ const InvoiceDetailPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['invoice', invoiceId] }),
   });
 
-  const fallbackMock = MOCK_INVOICES.find((i) => i._id === invoiceId || i.id === invoiceId) || MOCK_INVOICES[0];
-  const invoice = invoiceRes?.data || fallbackMock;
+  const invoice = invoiceRes?.data;
 
   if (isLoading && !invoice) {
     return (
@@ -71,7 +69,7 @@ const InvoiceDetailPage = () => {
   }
 
   const customer = typeof invoice.customerId === 'object' && invoice.customerId ? invoice.customerId : null;
-  const customerName = customer ? (customer.name || `${customer.firstName} ${customer.lastName}`) : (invoice.customerName || 'Sterling Capital Retail');
+  const customerName = customer ? (customer.name || `${customer.firstName} ${customer.lastName}`) : (invoice.customerName || 'Direct Customer');
 
   const handlePrint = () => {
     window.print();

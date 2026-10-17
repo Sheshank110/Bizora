@@ -13,7 +13,6 @@ import {
 import { Button, Badge, Spinner, Avatar, Alert, Input } from '../../components/ui';
 import { useEmployeeDetails, useEmployeeMutations } from '../../hooks/useEmployees';
 import useBusiness from '../../hooks/useBusiness';
-import { MOCK_EMPLOYEES } from '../../data/mockData';
 
 const EmployeeDetailPage = () => {
   const { employeeId } = useParams();
@@ -21,8 +20,7 @@ const EmployeeDetailPage = () => {
   const { data: employeeData, isLoading } = useEmployeeDetails(employeeId);
   const { updateEmployee, isUpdating } = useEmployeeMutations();
 
-  const fallbackEmployee = MOCK_EMPLOYEES.find((e) => e._id === employeeId || e.id === employeeId) || MOCK_EMPLOYEES[0];
-  const employee = employeeData || fallbackEmployee;
+  const employee = employeeData?.data || employeeData;
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [formData, setFormData] = useState({

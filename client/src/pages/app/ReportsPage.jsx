@@ -13,7 +13,42 @@ import {
 import { Button, Select, Spinner } from '../../components/ui';
 import reportService from '../../services/reportService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_DASHBOARD_STATS, MOCK_REVENUE_CHART } from '../../data/mockData';
+const emptySummary = {
+  financial: {
+    totalRevenue: 0,
+    totalExpenses: 0,
+    netProfit: 0,
+    profitMargin: '0%',
+  },
+  monthlyBreakdown: [
+    { month: 'Jan', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Feb', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Mar', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Apr', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'May', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Jun', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Jul', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Aug', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Sep', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Oct', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Nov', revenue: 0, expenses: 0, profit: 0 },
+    { month: 'Dec', revenue: 0, expenses: 0, profit: 0 },
+  ],
+  projects: {
+    total: 0,
+    active: 0,
+    completed: 0,
+  },
+  tasks: {
+    total: 0,
+    completed: 0,
+    pending: 0,
+  },
+  inventory: {
+    totalItems: 0,
+    lowStockCount: 0,
+  },
+};
 
 const ReportsPage = () => {
   const { currentBusiness } = useAuthStore();
@@ -24,29 +59,7 @@ const ReportsPage = () => {
     queryFn: () => reportService.getSummary(),
   });
 
-  const summary = (summaryRes?.data && (summaryRes.data.financial?.totalRevenue > 0 || summaryRes.data.monthlyBreakdown?.length > 0)) ? summaryRes.data : {
-    financial: {
-      totalRevenue: MOCK_DASHBOARD_STATS.revenue.total,
-      totalExpenses: MOCK_DASHBOARD_STATS.expenses.total,
-      netProfit: MOCK_DASHBOARD_STATS.profit.net,
-      profitMargin: `${MOCK_DASHBOARD_STATS.profit.margin}%`,
-    },
-    monthlyBreakdown: MOCK_REVENUE_CHART,
-    projects: {
-      total: MOCK_DASHBOARD_STATS.projects.total,
-      active: MOCK_DASHBOARD_STATS.projects.active,
-      completed: MOCK_DASHBOARD_STATS.projects.completed,
-    },
-    tasks: {
-      total: MOCK_DASHBOARD_STATS.tasks.total,
-      completed: MOCK_DASHBOARD_STATS.tasks.completed,
-      pending: MOCK_DASHBOARD_STATS.tasks.open,
-    },
-    inventory: {
-      totalItems: MOCK_DASHBOARD_STATS.inventory.totalSKUs,
-      lowStockCount: MOCK_DASHBOARD_STATS.inventory.lowStock,
-    },
-  };
+  const summary = summaryRes?.data || emptySummary;
 
   const handleExportCsv = () => {
     const url = reportService.exportCsvUrl(exportType);
@@ -62,7 +75,7 @@ const ReportsPage = () => {
     );
   }
 
-  const chartData = (summary.monthlyBreakdown && summary.monthlyBreakdown.length > 0) ? summary.monthlyBreakdown : MOCK_REVENUE_CHART;
+  const chartData = summary.monthlyBreakdown || emptySummary.monthlyBreakdown;
 
   return (
     <div className="space-y-6">

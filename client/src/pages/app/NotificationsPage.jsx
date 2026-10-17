@@ -17,7 +17,6 @@ import { Button, Badge, Spinner } from '../../components/ui';
 import notificationService from '../../services/notificationService';
 import { getSocket } from '../../services/socket';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_NOTIFICATIONS } from '../../data/mockData';
 
 const iconMap = {
   TASK_ASSIGNED: IconChecklist,
@@ -68,7 +67,7 @@ const NotificationsPage = () => {
     };
   }, [queryClient]);
 
-  const notifications = (notificationsRes?.data && notificationsRes.data.length > 0) ? notificationsRes.data : MOCK_NOTIFICATIONS;
+  const notifications = notificationsRes?.data || [];
   const unreadCount = notifications.filter((n) => !n.readAt).length;
 
   return (

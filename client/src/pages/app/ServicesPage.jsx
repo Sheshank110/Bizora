@@ -11,7 +11,6 @@ import {
 import { Button, Input, Select, Badge, Modal, Spinner } from '../../components/ui';
 import serviceService from '../../services/serviceService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_SERVICES } from '../../data/mockData';
 
 const CATEGORIES = ['All', 'Development', 'Design', 'Marketing', 'Consulting', 'Support', 'Other'];
 
@@ -67,7 +66,7 @@ const ServicesPage = () => {
     },
   });
 
-  const services = (servicesRes?.data && servicesRes.data.length > 0) ? servicesRes.data : MOCK_SERVICES;
+  const services = servicesRes?.data || [];
 
   const openCreateModal = () => {
     setEditingService(null);

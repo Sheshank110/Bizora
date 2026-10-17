@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { IconFileText, IconEye } from '@tabler/icons-react';
 import { Button, Badge, Spinner } from '../../components/ui';
 import clientPortalService from '../../services/clientPortalService';
-import { MOCK_INVOICES } from '../../data/mockData';
 
 const statusVariants = {
   DRAFT: 'default',
@@ -20,7 +19,7 @@ const ClientInvoicesPage = () => {
     queryFn: () => clientPortalService.getInvoices(),
   });
 
-  const invoices = (invoicesRes?.data && invoicesRes.data.length > 0) ? invoicesRes.data : MOCK_INVOICES.slice(0, 2);
+  const invoices = invoicesRes?.data || [];
 
   if (isLoading) {
     return (

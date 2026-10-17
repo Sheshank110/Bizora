@@ -9,7 +9,6 @@ import {
 import { Button, Input, Select, Modal, Spinner } from '../../components/ui';
 import expenseService from '../../services/expenseService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_EXPENSES } from '../../data/mockData';
 
 const CATEGORIES = ['All', 'Office', 'Marketing', 'Travel', 'Software', 'Equipment', 'Salary', 'Utilities', 'Other'];
 
@@ -59,7 +58,7 @@ const ExpensesPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['expenses'] }),
   });
 
-  const expenses = (expensesRes?.data && expensesRes.data.length > 0) ? expensesRes.data : MOCK_EXPENSES;
+  const expenses = expensesRes?.data || [];
   const totalSpent = expenses.reduce((acc, exp) => acc + (exp.amount || 0), 0);
 
   const handleCreate = (e) => {

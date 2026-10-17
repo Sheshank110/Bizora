@@ -11,7 +11,6 @@ import {
 import { Button, Input, Select, Badge, Modal, Spinner } from '../../components/ui';
 import inventoryService from '../../services/inventoryService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_INVENTORY } from '../../data/mockData';
 
 const InventoryPage = () => {
   const { currentBusiness } = useAuthStore();
@@ -77,7 +76,7 @@ const InventoryPage = () => {
     },
   });
 
-  const items = (inventoryRes?.data && inventoryRes.data.length > 0) ? inventoryRes.data : MOCK_INVENTORY;
+  const items = inventoryRes?.data || [];
 
   const totalValue = items.reduce((acc, it) => acc + (it.stockQuantity * (it.sellingPrice || 0)), 0);
   const lowStockCount = items.filter((it) => it.stockQuantity <= it.minimumStock && it.stockQuantity > 0).length;

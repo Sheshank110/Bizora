@@ -18,7 +18,6 @@ import {
 } from '../../hooks/useEmployees';
 import useBusiness from '../../hooks/useBusiness';
 import useAuthStore from '../../store/authStore';
-import { MOCK_EMPLOYEES } from '../../data/mockData';
 
 const EmployeesPage = () => {
   const { user } = useAuthStore();
@@ -55,7 +54,7 @@ const EmployeesPage = () => {
     isInviting,
   } = useEmployeeMutations();
 
-  const employees = (employeesData?.data && employeesData.data.length > 0) ? employeesData.data : MOCK_EMPLOYEES;
+  const employees = employeesData?.data || [];
   const canManageTeam = activeRole === 'owner' || activeRole === 'manager' || activeRole === 'admin';
   const isOwner = activeRole === 'owner';
 

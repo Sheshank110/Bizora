@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { IconFolder, IconCalendar } from '@tabler/icons-react';
 import { Badge, Spinner } from '../../components/ui';
 import clientPortalService from '../../services/clientPortalService';
-import { MOCK_PROJECTS } from '../../data/mockData';
 
 const statusVariants = {
   PLANNING: 'default',
@@ -18,7 +17,7 @@ const ClientProjectsPage = () => {
     queryFn: () => clientPortalService.getProjects(),
   });
 
-  const projects = (projectsRes?.data && projectsRes.data.length > 0) ? projectsRes.data : MOCK_PROJECTS.slice(0, 2);
+  const projects = projectsRes?.data || [];
 
   if (isLoading) {
     return (

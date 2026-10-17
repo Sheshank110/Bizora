@@ -8,11 +8,10 @@ import {
   IconChevronRight,
   IconCheck,
 } from '@tabler/icons-react';
-import { Button, Input, Select, Modal, Spinner, Badge } from '../../components/ui';
+import { Button, Input, Select, Modal, Spinner, Badge, EmptyState } from '../../components/ui';
 import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { useAuthStore } from '../../store/authStore';
-import { MOCK_TASKS } from '../../data/mockData';
 
 const COLUMNS = [
   { id: 'TODO', label: 'To Do' },
@@ -77,7 +76,7 @@ const TasksPage = () => {
     },
   });
 
-  const tasks = (tasksRes?.data && tasksRes.data.length > 0) ? tasksRes.data : MOCK_TASKS;
+  const tasks = tasksRes?.data || [];
   const projects = projectsRes?.data || [];
 
   const handleCreate = (e) => {
@@ -258,6 +257,14 @@ const TasksPage = () => {
             );
           })}
         </div>
+      ) : tasks.length === 0 ? (
+        <EmptyState
+          title="No tasks yet"
+          description="Create your first task to track operational deliverables and assignments."
+          action={() => setIsModalOpen(true)}
+          actionLabel="New Task"
+          className="bg-[var(--surface-secondary)] rounded-lg py-16"
+        />
       ) : (
         /* LIST VIEW: Clean table */
         <div className="p-2 rounded-lg bg-[var(--surface-secondary)]">
